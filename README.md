@@ -33,9 +33,6 @@ To run the project locally, ensure you have the following installed:
 
 ---
 
-
----
-
 ## Getting Started
 
 ### 1. **Access the Hosted Version**

@@ -1,13 +1,13 @@
-package com.sparta.financialadvisorchatbotsetup;
+package com.sparta.financialadvisorchatbot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FinancialAdvisorChatbotSetupApplication {
+public class FinancialAdvisorChatbotApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FinancialAdvisorChatbotSetupApplication.class, args);
+        SpringApplication.run(FinancialAdvisorChatbotApplication.class, args);
     }
 
 }

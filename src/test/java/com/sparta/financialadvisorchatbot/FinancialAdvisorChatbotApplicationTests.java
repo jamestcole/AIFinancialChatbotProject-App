@@ -1,10 +1,10 @@
-package com.sparta.financialadvisorchatbotsetup;
+package com.sparta.financialadvisorchatbot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FinancialAdvisorChatbotSetupApplicationTests {
+class FinancialAdvisorChatbotApplicationTests {
 
     @Test
     void contextLoads() {

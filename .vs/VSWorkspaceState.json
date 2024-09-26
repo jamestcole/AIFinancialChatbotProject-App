@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\main",
+    "\\src\\main\\java",
+    "\\src\\main\\java\\com",
+    "\\src\\main\\java\\com\\sparta",
+    "\\src\\main\\java\\com\\sparta\\financialadvisorchatbot",
+    "\\src\\main\\resources",
+    "\\src\\main\\resources\\templates"
+  ],
+  "SelectedNode": "\\src\\main\\resources\\templates\\home.html",
+  "PreviewInSolutionExplorer": false
+}

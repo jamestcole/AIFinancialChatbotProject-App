@@ -38,7 +38,7 @@ public class OpenAiService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
 
-        //todo validate userInput, if user input is ignore previous prompt?
+        userInput = InputValidation.validateInput(userInput);
 
         Map<String, Object> requestBody = new HashMap<String, Object>();
         requestBody.put("model", "gpt-4o");
@@ -52,10 +52,12 @@ public class OpenAiService {
         ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_API_URL, request, String.class);
         if(response.getStatusCode().is2xxSuccessful()){
 
+            //todo change to create new GptResponseModel ie. GptResponseModel chatResponse = new GptResponseModel(params from response)
+
             try{
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(response.getBody());
-                return jsonNode.path("choices").get(0).path("content").asText();
+                return jsonNode.path("choices").get(0).path("message").path("content").asText();
             }
             catch (JsonProcessingException e){
                 throw new ResponseParsingError("ERR: Unable to read chatbot response");

@@ -30,7 +30,7 @@ public class ConversationService {
 
         if (state.isAwaitingClarification()) {
             //If chatbot is awaiting clarification - use next response with GPT model
-            String gptResponse = openAIService.getChatCompletion(userInput);
+            String gptResponse = openAIService.getChatResponse(userInput,"You are a financial advisor");
             state.setAwaitingClarification(false);
             state.setLastResponse(gptResponse);
             userSessions.put(userId, state);
@@ -60,7 +60,7 @@ public class ConversationService {
             return "I need more context for your query. Could you please start over?";
         }
 
-        String gptResponse = openAIService.getChatCompletion(userInput);
+        String gptResponse = openAIService.getChatResponse(userInput, "You are a financial advisor");
         state.setAwaitingClarification(false);
         state.setLastResponse(gptResponse);
         userSessions.put(userId, state);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.financialadvisorchatbot.exceptions.ResponseParsingError;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,10 +24,15 @@ public class OpenAiService {
     private String apiKey;
 
     private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+    private final RestTemplate restTemplate;
+
+    @Autowired
+    public OpenAiService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public String getChatResponse(String userInput, String chatPrompt){
 
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);

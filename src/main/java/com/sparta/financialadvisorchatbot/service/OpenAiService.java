@@ -55,7 +55,7 @@ public class OpenAiService {
             try{
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(response.getBody());
-                return jsonNode.path("choices").get(0).path("content").asText();
+                return jsonNode.path("choices").get(0).path("message").path("content").asText();
             }
             catch (JsonProcessingException e){
                 throw new ResponseParsingError("ERR: Unable to read chatbot response");

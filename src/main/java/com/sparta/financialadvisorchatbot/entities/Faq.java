@@ -28,13 +28,13 @@ public class Faq {
     @JoinTable(name = "junction_faqs_sources",
             joinColumns = @JoinColumn(name = "question_id"),
             inverseJoinColumns = @JoinColumn(name = "source_id"))
-    private Set<com.sparta.financialadvisorchatbot.entities.Source> sources = new LinkedHashSet<>();
+    private Set<Source> sources = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(name = "junction_keywords_faqs",
             joinColumns = @JoinColumn(name = "question_id"),
             inverseJoinColumns = @JoinColumn(name = "keyword_id"))
-    private Set<com.sparta.financialadvisorchatbot.entities.Keyword> keywords = new LinkedHashSet<>();
+    private Set<Keyword> keywords = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;

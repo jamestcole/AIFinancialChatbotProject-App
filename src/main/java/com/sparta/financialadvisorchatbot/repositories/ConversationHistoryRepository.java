@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ConversationHistoryRepository extends JpaRepository<ConversationHistory, Integer> {
-    List<ConversationHistory> findByConversation_ConversationId(Integer conversationId);
+    List<ConversationHistory> findByConversation_Id(Integer conversationId);
 
 }

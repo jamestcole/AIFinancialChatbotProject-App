@@ -14,7 +14,7 @@ public class ConversationHistory {
     @MapsId("conversationId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "conversation_id", nullable = false)
-    private com.sparta.financialadvisorchatbot.entities.ConversationId conversation;
+    private ConversationId conversation;
 
     @Size(max = 255)
     @Column(name = "input")

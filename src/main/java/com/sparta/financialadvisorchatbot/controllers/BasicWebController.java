@@ -19,20 +19,21 @@ public class BasicWebController {
     private final ConversationService conversationService;
     private final FaqService faqService;
 
+    @Autowired
     public BasicWebController(FinancialAdvisorService financialAdvisorService, ConversationService conversationService, FaqService faqService) {
         this.financialAdvisorService = financialAdvisorService;
         this.conversationService = conversationService;
         this.faqService = faqService;
     }
 
-//    @GetMapping("/chatbot")
-//    public String getHome(Model model) {
-////        int newConversationId = conversationService.getLatestConversationId() + 1;
-////        return "redirect:/chatbot/" + newConversationId;
-//
-//        return "home";
-//
-//    }
+    @GetMapping("/chatbot")
+    public String getHome(Model model) {
+//        int newConversationId = conversationService.getLatestConversationId() + 1;
+//        return "redirect:/chatbot/" + newConversationId;
+
+        return "home";
+
+    }
 //
 //    @PostMapping("/chatbot")
 //    public String postHome(@RequestAttribute("input") String input, Model model) {

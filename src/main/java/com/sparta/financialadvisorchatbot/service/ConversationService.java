@@ -1,6 +1,8 @@
 package com.sparta.financialadvisorchatbot.service;
 
+import com.sparta.financialadvisorchatbot.entities.Conversation;
 import com.sparta.financialadvisorchatbot.models.ConversationState;
+import com.sparta.financialadvisorchatbot.repositories.ConversationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +15,13 @@ public class ConversationService {
 
     private final FaqService faqService;
     private final OpenAiService openAIService;
+    private final ConversationRepository conversationRepository;
 
     @Autowired
-    public ConversationService(FaqService faqService, OpenAiService openAIService) {
+    public ConversationService(FaqService faqService, OpenAiService openAIService, ConversationRepository conversationRepository) {
         this.faqService = faqService;
         this.openAIService = openAIService;
+        this.conversationRepository = conversationRepository;
     }
 
     //Hello, how can I help you today?
@@ -43,10 +47,20 @@ public class ConversationService {
         if ("Yes".equalsIgnoreCase(userResponse)) {
             return "Can I help you with anything else?";
         } else if ("No".equalsIgnoreCase(userResponse)) {
-            String gptResponse = openAIService.getChatResponse(originalInput, "temp chat prompt");
+//            String gptResponse = openAIService.getChatResponse(originalInput, "temp chat prompt");
+            String gptResponse = openAIService.getMockGptResponse(originalInput);
         return gptResponse + "\n\nDoes this answer your question? (Yes/No)";
         } else {
             return "Sorry, I didn't understand that. Please respond with Yes or No.";
         }
+    }
+
+    public Conversation getLatestConversation() {
+        return conversationRepository.findFirstByOrderByIdDesc();
+    }
+
+    public Integer getLatestConversationId() {
+        Conversation latestConversation = getLatestConversation();
+        return latestConversation !=  null ? latestConversation.getId() : null;
     }
 }

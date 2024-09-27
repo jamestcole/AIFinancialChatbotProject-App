@@ -4,7 +4,6 @@ import com.sparta.financialadvisorchatbot.service.ConversationService;
 import com.sparta.financialadvisorchatbot.service.FaqService;
 import com.sparta.financialadvisorchatbot.service.OpenAiService;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,14 +29,14 @@ public class ConversationServiceTest {
     @InjectMocks
     ConversationService conversationService;
 
-    @Test
+    @Test //for old code may need rewriting
     void testProcessUserInputReturnsGptResponseIfStateIsAwaitingClarification() throws IOException {
         String expected = "Test GPT response" + "\nCan I help you with anything else";
         when(openAiService.getChatResponse(anyString(), anyString())).thenReturn("Test GPT response");
         String actual = conversationService.processUserInput("1","What is a dividend");
         Assertions.assertEquals(expected,actual);
     }
-    @Test
+    @Test //for old code may need rewriting
     void testProcessUserInputReturnsFaQResponseIfFAQResponseExists() throws IOException {
 
         String expected = "Test FAQ Response" + "\nCan I help you with anything else";
@@ -46,11 +45,31 @@ public class ConversationServiceTest {
         Assertions.assertEquals(expected,actual);
 
     }
-    @Test
+    @Test //for old code may need rewriting
     void testProcessUserInputReturnsGptResponseIfFAQResponseDoesNotExist() throws IOException {
         String expected = "Test GPT response" + "\nCan I help you with anything else";
         when(openAiService.getChatResponse(anyString(), anyString())).thenReturn("Test GPT response");
         String actual = conversationService.processUserInput("1","What is a dividend");
         Assertions.assertEquals(expected,actual);
+    }
+    @Test
+    void testGetLatestConversationIdReturnsLatestConversationId(){
+
+    }
+    @Test
+    void testGetConversationReturnsCurrentConversation(){
+
+    }
+    @Test
+    void testGetFaqResponseReturnsFaqResponseIfPresent(){
+
+    }
+    @Test
+    void testGetFaqResponseReturnsGptResponseIfNoMatchToFaq(){
+
+    }
+    @Test
+    void testGetStartMessageReturnsStartMessage(){
+
     }
 }

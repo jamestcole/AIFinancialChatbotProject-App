@@ -22,11 +22,11 @@ public class FaqService {
 
         ArrayList<Faq> result = new ArrayList<>();
 
-//        for (Faq question : questions) {
-//            if (Arrays.stream(words).anyMatch(question.getKeyword()::contains)) {
-//                result.add(question);
-//            }
-//        }
+        for (Faq question : questions) {
+            if (Arrays.stream(words).anyMatch(question.getKeywords()::contains)) {
+                result.add(question);
+            }
+        }
 
         return result.stream().limit(3).collect(Collectors.toCollection(ArrayList::new));
     }

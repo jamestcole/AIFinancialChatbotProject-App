@@ -3,6 +3,7 @@ package com.sparta.financialadvisorchatbot.service;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
 import com.sparta.financialadvisorchatbot.entities.ConversationId;
+import com.sparta.financialadvisorchatbot.entities.Faq;
 import com.sparta.financialadvisorchatbot.repositories.ConversationHistoryRepository;
 import com.sparta.financialadvisorchatbot.repositories.ConversationIdRepository;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ConversationService {
@@ -29,8 +31,8 @@ public class ConversationService {
     }
 
     public ConversationId startConversation() {
-        ConversationId conversationId = new ConversationId();
-        return conversationIdRepository.save(conversationId);
+        ConversationId conversation = new ConversationId();
+        return conversationIdRepository.save(conversation);
     }
 
     public void saveConversationHistory(Integer conversationId, String userInput, String botResponse) {
@@ -63,19 +65,22 @@ public class ConversationService {
         return "Hello, I am Sparta Global's Financial Advisor Chatbot! How can I help you today?";
     }
 
-    public String handleUserInput(Integer conversationId, String userInput) {
+    public List<String> handleUserInput(Integer conversationId, String userInput) {
         // Check for FAQ match
-        String faqResponse = checkForFAQMatch(userInput);
-        if (faqResponse != null) {
-            return faqResponse; // Return the FAQ response
+        List<Faq> faqResponse = checkForFAQMatch(userInput);
+        if (faqResponse != null && !faqResponse.isEmpty()) {
+            return faqResponse.stream()
+                    .map(Faq::getAnswer) // Replace 'getAnswer' with the appropriate method from Faq
+                    .collect(Collectors.toList());
         } else {
-            // If no match, prompt for more specifics
-            return "Could you please be a little more specific?";
+            // If no match, return a list with a single string prompting for more specifics
+            return List.of("Could you please be a little more specific?");
         }
     }
 
-    private String checkForFAQMatch(String userInput) {
-        return "faq response";
+
+    private List<Faq> checkForFAQMatch(String userInput) {
+        return faqService.findMatchingFaqs(userInput);
     }
 
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 
 @Service
 public class ConversationService {
+    /*
 
     private final FaqService faqService;
     private final OpenAiService openAIService;
@@ -66,4 +67,5 @@ public class ConversationService {
         userSessions.put(userId, state);
         return gptResponse + "\nCan I help you with anything else?";
     }
+     */
 }

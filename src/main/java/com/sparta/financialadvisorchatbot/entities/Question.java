@@ -29,8 +29,8 @@ public class Question {
     @Column(name = "keyword")
     private String keyword;
 
-    @ManyToMany(mappedBy = "question")
-    private Set<com.sparta.financialadvisorchatbot.entities.Reference> references = new LinkedHashSet<>();
+    //@ManyToMany(mappedBy = "question")
+    //private Set<com.sparta.financialadvisorchatbot.entities.Reference> references = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -64,12 +64,12 @@ public class Question {
         this.keyword = keyword;
     }
 
-    public Set<com.sparta.financialadvisorchatbot.entities.Reference> getReferences() {
-        return references;
-    }
-
-    public void setReferences(Set<com.sparta.financialadvisorchatbot.entities.Reference> references) {
-        this.references = references;
-    }
+//    public Set<com.sparta.financialadvisorchatbot.entities.Reference> getReferences() {
+//        return references;
+//    }
+//
+//    public void setReferences(Set<com.sparta.financialadvisorchatbot.entities.Reference> references) {
+//        this.references = references;
+//    }
 
 }

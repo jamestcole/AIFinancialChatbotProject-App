@@ -31,7 +31,7 @@ public class OpenAiService {
         this.restTemplate = restTemplate;
     }
 
-    public String getChatResponse(String userInput, String chatPrompt){
+    public String getChatResponse(String userInput){
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -43,7 +43,7 @@ public class OpenAiService {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         requestBody.put("model", "gpt-4o");
         requestBody.put("messages", List.of(
-                Map.of("role","system","content",chatPrompt),
+//                Map.of("role","system","content",chatPrompt),
                 Map.of("role","user","content",userInput)
         ));
         requestBody.put("max_tokens", 100);

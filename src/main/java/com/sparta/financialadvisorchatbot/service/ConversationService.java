@@ -22,14 +22,18 @@ public class ConversationService {
     private final ConversationIdRepository conversationIdRepository;
     private final ConversationHistoryRepository conversationHistoryRepository;
     private final FaqService faqService;
+    private final OpenAiService openAiService;
     // Singleton instance of the conversation
     private ConversationId activeConversation;
+    //Track tier of conversation
+    private boolean waitingForClarification = false;
 
     @Autowired
-    public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService) {
+    public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService, OpenAiService openAiService) {
         this.conversationIdRepository = conversationIdRepository;
         this.conversationHistoryRepository = conversationHistoryRepository;
         this.faqService = faqService;
+        this.openAiService = openAiService;
     }
 
 //    public ConversationId startConversation() {
@@ -84,6 +88,16 @@ public class ConversationService {
     }
 
     public List<String> handleUserInput(Integer conversationId, String userInput) {
+
+        if (waitingForClarification) {
+            waitingForClarification = false;
+
+            String openAiResponse = openAiService.getChatResponse(userInput);
+            return List.of(openAiResponse);
+        }
+
+
+
         // Check for FAQ match
         List<Faq> faqResponse = checkForFAQMatch(userInput);
         if (faqResponse != null && !faqResponse.isEmpty()) {
@@ -92,6 +106,7 @@ public class ConversationService {
                     .collect(Collectors.toList());
         } else {
             // If no match, return a list with a single string prompting for more specifics
+            waitingForClarification = true;
             return List.of("Could you please be a little more specific?");
         }
     }

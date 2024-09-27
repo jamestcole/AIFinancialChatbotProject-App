@@ -25,36 +25,36 @@ public class BasicWebController {
         this.faqService = faqService;
     }
 
-    @GetMapping("/chatbot")
-    public String getHome(Model model) {
-//        int newConversationId = conversationService.getLatestConversationId() + 1;
-//        return "redirect:/chatbot/" + newConversationId;
-
-        return "home";
-
-    }
-
-    @PostMapping("/chatbot")
-    public String postHome(@RequestAttribute("input") String input, Model model) {
-        model.addAttribute("Conversation", conversationService.getConversationById(conversationService.getLatestConversationId()));
-        model.addAttribute("User", input);
-        model.addAttribute("ChatBot", faqService.getFAQs(input));
-        return "redirect:/chatbot/" + conversationService.getLatestConversationId();
-    }
-
-    @GetMapping("/chatbot/{id}")
-    public String getChatbotConversation(@PathVariable Integer id, Model model) {
-        model.addAttribute("Conversation", conversationService.getConversationById(id));
-        model.addAttribute("ChatBot", conversationService.getStartMessage());
-        model.addAttribute("User", "");
-        return "home";
-    }
-
-    @PostMapping("/chatbot/{id}")
-    public String postHome(@PathVariable Integer id, @RequestAttribute("input") String input, Model model) {
-        model.addAttribute("Conversation", conversationService.getConversationById(id));
-        model.addAttribute("User", input);
-        model.addAttribute("ChatBot", faqService.getFAQs(input));
-        return "redirect:/chatbot/" + id;
-    }
+//    @GetMapping("/chatbot")
+//    public String getHome(Model model) {
+////        int newConversationId = conversationService.getLatestConversationId() + 1;
+////        return "redirect:/chatbot/" + newConversationId;
+//
+//        return "home";
+//
+//    }
+//
+//    @PostMapping("/chatbot")
+//    public String postHome(@RequestAttribute("input") String input, Model model) {
+//        model.addAttribute("Conversation", conversationService.getConversationById(conversationService.getLatestConversationId()));
+//        model.addAttribute("User", input);
+//        model.addAttribute("ChatBot", faqService.getFAQs(input));
+//        return "redirect:/chatbot/" + conversationService.getLatestConversationId();
+//    }
+//
+//    @GetMapping("/chatbot/{id}")
+//    public String getChatbotConversation(@PathVariable Integer id, Model model) {
+//        model.addAttribute("Conversation", conversationService.getConversationById(id));
+//        model.addAttribute("ChatBot", conversationService.getStartMessage());
+//        model.addAttribute("User", "");
+//        return "home";
+//    }
+//
+//    @PostMapping("/chatbot/{id}")
+//    public String postHome(@PathVariable Integer id, @RequestAttribute("input") String input, Model model) {
+//        model.addAttribute("Conversation", conversationService.getConversationById(id));
+//        model.addAttribute("User", input);
+//        model.addAttribute("ChatBot", faqService.getFAQs(input));
+//        return "redirect:/chatbot/" + id;
+//    }
 }

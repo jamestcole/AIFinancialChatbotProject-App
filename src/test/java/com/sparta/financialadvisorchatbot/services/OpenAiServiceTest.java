@@ -1,5 +1,6 @@
 package com.sparta.financialadvisorchatbot.services;
 
+import com.sparta.financialadvisorchatbot.entities.Conversation;
 import com.sparta.financialadvisorchatbot.exceptions.ResponseParsingError;
 import com.sparta.financialadvisorchatbot.service.OpenAiService;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +43,7 @@ public class OpenAiServiceTest {
                 .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
 
         String userMessage = "This is a test message";
-        String actual = openAiService.getChatResponse(userMessage,"You are a financial advisor");
+        String actual = openAiService.getChatResponse(userMessage).getBotResponse();
         Assertions.assertEquals(expected,actual);
     }
     @Test
@@ -54,7 +55,7 @@ public class OpenAiServiceTest {
 
         String userMessage = "This is a test message";
         Assertions.assertThrows(ResponseParsingError.class, () -> {
-            openAiService.getChatResponse(userMessage,"You are a financial advisor");
+            openAiService.getChatResponse(userMessage);
         });
     }
 }

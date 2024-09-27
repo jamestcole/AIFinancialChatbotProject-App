@@ -5,9 +5,11 @@ import com.sparta.financialadvisorchatbot.repositories.QuestionRepository;
 import com.sparta.financialadvisorchatbot.service.FaqService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,56 +20,73 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class FaqServiceTests {
-    @Autowired
+
+    @Mock
+    private QuestionRepository questionRepository;
+
+    @InjectMocks
     private FaqService faqService;
 
-    // Setup method, if needed to initialize data
-    @BeforeEach
-    public void setUp() {
-        // Optional: Add setup steps if necessary
+    private List<Question> questions;
+
+    @BeforeEach()
+    void setUp() {
+
+        Question question1 = new Question();
+        Question question2 = new Question();
+        Question question3 = new Question();
+        Question question4 = new Question();
+        Question question5 = new Question();
+
+        question1.setKeyword("money");
+        question2.setKeyword("money");
+        question3.setKeyword("money");
+        question4.setKeyword("stocks");
+        question5.setKeyword("money");
+
+        question1.setAnswer("by saving money");
+        question2.setAnswer("by saving more money");
+        question3.setAnswer("by saving even more money");
+        question4.setAnswer("stocks are a medieval device to put bad people in");
+        question5.setAnswer("by saving even more money than that");
+        questions = new ArrayList<>(List.of(question1, question2, question3, question4));
     }
 
-    // Test: Searching for the most common keyword
     @Test
-    public void testFindMostCommonKeyword() {
-        String query = "Tell me about savings accounts and savings";
-
-        String result = faqService.findMostCommonKeyword(query);
-
-        assertEquals("savings", result, "The most common word should be 'savings'.");
+    void testGetFaqsReturnsOnly3FaqsWhenValidInputAndMoreThanThreeAnswers(){
+        int expected = 3;
+        String input = "how can I save money";
+        when(questionRepository.findAll()).thenReturn(questions);
+        List<Question> faqs = faqService.getFAQs(input);
+        assertEquals(expected, faqs.size());
     }
 
-    // Test: Fetching FAQs by keyword (Integration test with DB)
     @Test
-    public void testGetFAQsByKeyword_found() {
-        String keyword = "savings";
-
-        List<Question> faqs = faqService.getFAQsByKeyword(keyword);
-
-        assertEquals(2, faqs.size(), "Should return 2 FAQs for the keyword 'savings'.");
-        assertEquals("What is a savings account?", faqs.get(0).getQuestion());
-        assertEquals("What is the difference between a checking and a savings account?", faqs.get(1).getQuestion());
+    void testGetFaqsReturnsEmptyListWhenInputDoesNotContainKeyword(){
+        int expected = 0;
+        String input = "what is the colour of the sky";
+        when(questionRepository.findAll()).thenReturn(questions);
+        List<Question> faqs = faqService.getFAQs(input);
+        assertEquals(expected, faqs.size());
     }
 
-    // Test: Fetching FAQs when no results
     @Test
-    public void testGetFAQsByKeyword_notFound() {
-        String keyword = "nonexistent";
-
-        List<Question> faqs = faqService.getFAQsByKeyword(keyword);
-
-        assertTrue(faqs.isEmpty(), "No FAQs should be found for the keyword 'nonexistent'.");
+    void testGetFaqsReturnsOnly1AnswerWhenOnlyOneKeywordMatches(){
+        int expected = 1;
+        String input = "stocks";
+        when(questionRepository.findAll()).thenReturn(questions);
+        List<Question> faqs = faqService.getFAQs(input);
+        assertEquals(expected, faqs.size());
     }
 
-    // Test: Limiting to 3 FAQs
     @Test
-    public void testGetFAQsByKeyword_limitToThree() {
-        String keyword = "savings";
-
-        List<Question> faqs = faqService.getFAQsByKeyword(keyword);
-
-        assertTrue(faqs.size() <= 3, "The result should be limited to 3 FAQs.");
+    void testGetFaqsReturnsFaqsWhenKeywordIsWithinWords(){
+        int expected = 1;
+        String input = "howdoifindinformationonstocksasiwanttoinvest";
+        when(questionRepository.findAll()).thenReturn(questions);
+        List<Question> faqs = faqService.getFAQs(input);
+        assertEquals(expected, faqs.size());
     }
 }

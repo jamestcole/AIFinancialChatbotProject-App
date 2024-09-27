@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +42,15 @@ public class ConversationService {
 
         conversationHistoryRepository.save(conversationHistory);
     }
+
+    public List<ConversationHistory> getConversationHistory(Integer conversationId) {
+        List<ConversationHistory> conversationHistory = conversationHistoryRepository.findByConversation_ConversationId(conversationId);
+        if (conversationHistory.isEmpty()) {
+            throw new IllegalArgumentException("No conversation history found for this ID.");
+        }
+        return conversationHistory;
+    }
+
 
     public String getStartMessage() {
         return "Hello, I am Sparta Global's Financial Advisor Chatbot! How can I help you today?";

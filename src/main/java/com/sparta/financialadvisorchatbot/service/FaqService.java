@@ -1,8 +1,5 @@
 package com.sparta.financialadvisorchatbot.service;
 
-import com.sparta.financialadvisorchatbot.entities.Question;
-import com.sparta.financialadvisorchatbot.repositories.QuestionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

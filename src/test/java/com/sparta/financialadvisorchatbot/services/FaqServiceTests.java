@@ -1,22 +1,14 @@
 package com.sparta.financialadvisorchatbot.services;
 
-import com.sparta.financialadvisorchatbot.entities.Question;
-import com.sparta.financialadvisorchatbot.repositories.QuestionRepository;
 import com.sparta.financialadvisorchatbot.service.FaqService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class FaqServiceTests {

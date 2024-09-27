@@ -24,8 +24,8 @@ public class Reference {
     @Column(name = "link")
     private String link;
 
-    @ManyToMany(mappedBy = "reference")
-    private Set<Question> questions = new LinkedHashSet<>();
+//    @ManyToMany(mappedBy = "reference")
+//    private Set<Question> questions = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -51,12 +51,12 @@ public class Reference {
         this.link = link;
     }
 
-    public Set<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(Set<Question> questions) {
-        this.questions = questions;
-    }
+//    public Set<Question> getQuestions() {
+//        return questions;
+//    }
+//
+//    public void setQuestions(Set<Question> questions) {
+//        this.questions = questions;
+//    }
 
 }

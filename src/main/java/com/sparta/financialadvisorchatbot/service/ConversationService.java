@@ -20,50 +20,33 @@ public class ConversationService {
         this.openAIService = openAIService;
     }
 
-    //Temporary hashmap (replace with post to SQL database)
-    private Map<String, ConversationState> userSessions = new HashMap<>();
+    //Hello, how can I help you today?
+    //2. First user input (first prompt)
+    //->FaqService find closest FAQ match -> send to controller
+    //3. Does this answer your question?
+    //Yes = Can I help you with anything else? Return to 2.
+    //No = Could you please be a little more specific?
+    //User input
+    //Get GPT response, return to 3.
 
-    //Process user input and manage conversation state
-    public String processUserInput(String userId, String userInput) throws IOException {
-        //Retrieve conversation state -> create new one if it does not exist
-        ConversationState state = userSessions.getOrDefault(userId, new ConversationState());
-
-        if (state.isAwaitingClarification()) {
-            //If chatbot is awaiting clarification - use next response with GPT model
-            String gptResponse = openAIService.getChatCompletion(userInput);
-            state.setAwaitingClarification(false);
-            state.setLastResponse(gptResponse);
-            userSessions.put(userId, state);
-            return gptResponse + "\nCan I help you with anything else?";
-        }
-
-        //Try finding the closest FAQ match
+    public String processUserInput(String userInput) {
         String faqAnswer = faqService.findClosestFaq(userInput);
 
         if (faqAnswer != null) {
-            //Save the response (replace with DB) and update state
-            state.setLastResponse(faqAnswer);
-            userSessions.put(userId, state);
-            return faqAnswer + "\nCan I help you with anything else?";
+            return faqAnswer + "\n\nDoes this answer your question? (Yes/No)";
         } else {
-            //Ask for clarification if no FAQ match is found
-            state.setLastQuestion(userInput);
-            state.setAwaitingClarification(true);
-            userSessions.put(userId, state);
-            return "I couldn't find an exact match. Could you please be more specific about your question?";
+            return "Could you please be a little more specific?";
         }
     }
 
-    public String processClarification(String userId, String userInput) throws IOException {
-        ConversationState state = userSessions.get(userId);
-        if (state == null || !state.isAwaitingClarification()) {
-            return "I need more context for your query. Could you please start over?";
+    public String handleUserResponse(String userResponse, String originalInput) {
+        if ("Yes".equalsIgnoreCase(userResponse)) {
+            return "Can I help you with anything else?";
+        } else if ("No".equalsIgnoreCase(userResponse)) {
+            String gptResponse = openAIService.getChatResponse(originalInput, "temp chat prompt");
+        return gptResponse + "\n\nDoes this answer your question? (Yes/No)";
+        } else {
+            return "Sorry, I didn't understand that. Please respond with Yes or No.";
         }
-
-        String gptResponse = openAIService.getChatCompletion(userInput);
-        state.setAwaitingClarification(false);
-        state.setLastResponse(gptResponse);
-        userSessions.put(userId, state);
-        return gptResponse + "\nCan I help you with anything else?";
     }
 }

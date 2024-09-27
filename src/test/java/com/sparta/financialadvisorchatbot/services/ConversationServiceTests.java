@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,5 +86,35 @@ class ConversationServiceTests {
         String message = conversationService.getStartMessage();
 
         assertEquals("Hello, I am Sparta Global's Financial Advisor Chatbot! How can I help you today?", message);
+    }
+
+    @Test
+    public void testGetConversationHistory_Exists() {
+        List<ConversationHistory> historyList = new ArrayList<>();
+        ConversationHistory conversationHistory = new ConversationHistory();
+        conversationHistory.setConversation(conversationId);
+        conversationHistory.setInput("User input");
+        conversationHistory.setResponse("Bot response");
+        historyList.add(conversationHistory);
+
+        when(conversationHistoryRepository.findByConversation_ConversationId(1)).thenReturn(historyList);
+
+        List<ConversationHistory> result = conversationService.getConversationHistory(1);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("User input", result.getFirst().getInput());
+        assertEquals("Bot response", result.getFirst().getResponse());
+    }
+
+    @Test
+    public void testGetConversationHistory_NotFound() {
+        when(conversationHistoryRepository.findByConversation_ConversationId(1)).thenReturn(new ArrayList<>());
+
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            conversationService.getConversationHistory(1);
+        });
+
+        assertEquals("No conversation history found for this ID.", thrown.getMessage());
     }
 }

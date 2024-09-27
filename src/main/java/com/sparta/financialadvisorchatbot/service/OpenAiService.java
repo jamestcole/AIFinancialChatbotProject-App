@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,17 +56,23 @@ public class OpenAiService {
         ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_API_URL, request, String.class);
         if(response.getStatusCode().is2xxSuccessful()){
 
-            //todo change to create new GptResponseModel ie. GptResponseModel chatResponse = new GptResponseModel(params from response)
-
             try{
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(response.getBody());
-                return mapper.readValue(jsonNode.toString(), Conversation.class);
+                return generateNewConversationModel(userInput, jsonNode);
             }
             catch (JsonProcessingException e){
                 throw new ResponseParsingError("ERR: Unable to read chatbot response");
             }
         }
         throw new ResponseParsingError("ERR: Error while generating chat response"); // return response
+    }
+
+    private static Conversation generateNewConversationModel(String userInput, JsonNode jsonNode) {
+        Conversation responseModel = new Conversation();
+        responseModel.setUserInput(userInput);
+        responseModel.setTimestamp(Instant.now());
+        responseModel.setBotResponse(jsonNode.path("choices").get(0).path("message").path("content").asText());
+        return responseModel;
     }
 }

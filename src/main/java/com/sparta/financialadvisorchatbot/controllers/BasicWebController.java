@@ -1,5 +1,6 @@
 package com.sparta.financialadvisorchatbot.controllers;
 
+import com.sparta.financialadvisorchatbot.service.ConversationService;
 import com.sparta.financialadvisorchatbot.service.FinancialAdvisorService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;

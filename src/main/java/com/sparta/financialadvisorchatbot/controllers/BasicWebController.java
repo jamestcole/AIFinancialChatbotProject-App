@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 
@@ -28,7 +29,7 @@ public class BasicWebController {
     }
 
     @GetMapping("/chatbot/{id}")
-    public String getChatbotConversation(@PathParam("id") Integer id, Model model) {
+    public String getChatbotConversation(@PathVariable Integer id, Model model) {
         model.addAttribute("Conversation", conversationService.getConversation(id));
         model.addAttribute("ChatBot", conversationService.getStartMessage());
         model.addAttribute("User", "");
@@ -36,7 +37,7 @@ public class BasicWebController {
     }
 
     @PostMapping("/chatbot/{id}")
-    public String postHome(@PathParam("id") Integer id, @RequestAttribute("input") String input, Model model) {
+    public String postHome(@PathVariable Integer id, @RequestAttribute("input") String input, Model model) {
         model.addAttribute("Conversation", conversationService.getConversation(id));
         model.addAttribute("User", input);
         model.addAttribute("ChatBot", conversationService.getFaqResponse(input));

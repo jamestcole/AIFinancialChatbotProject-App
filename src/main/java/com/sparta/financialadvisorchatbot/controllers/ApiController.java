@@ -3,12 +3,14 @@ package com.sparta.financialadvisorchatbot.controllers;
 import com.sparta.financialadvisorchatbot.service.ConversationService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class ApiController {
 
     private final ConversationService conversationService;
@@ -17,12 +19,22 @@ public class ApiController {
         this.conversationService = conversationService;
     }
 
-    @PostMapping("/chatbot/{id}")
-    public String postHome(@PathParam("id") Integer id, @RequestAttribute("input") String input, Model model) {
-        model.addAttribute("Conversation", conversationService.getConversation(id));
-        model.addAttribute("User", input);
-        model.addAttribute("ChatBot", conversationService.getFaqResponse(input));
-        return "redirect:/chatbot/" + id;
+    @GetMapping("/chatbot/{id}")
+    public ResponseEntity<Map<String, String>> getChatbotConversation(@PathVariable Integer id) {
+        return ResponseEntity.ok(conversationService.getConversationById(id));
     }
 
+    @PostMapping("/chatbot/{id}")
+    public ResponseEntity<Map<String, String>> processInput(@PathVariable Integer id, @RequestBody Map<String, String> request) {
+        String userInput = request.get("input");
+        String storedInput = conversationService.storeUserInput(userInput, id);
+        String response = conversationService.generateResponse(storedInput, id);
+        String storedResponse = conversationService.storeResponse(response, id);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("input", storedInput);
+        result.put("response", storedResponse);
+
+        return ResponseEntity.ok(result);
+    }
 }

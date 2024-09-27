@@ -57,6 +57,7 @@ public class FaqService {
 
     private final QuestionRepository questionRepository;
 
+    @Autowired
     public FaqService(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }
@@ -67,8 +68,9 @@ public class FaqService {
 
         ArrayList<Question> result = new ArrayList<>();
 
+
         for (Question question : questions) {
-            if (Arrays.stream(words).anyMatch(question.getKeyword()::contains)) {
+            if (Arrays.stream(words).anyMatch(word -> word.contains(question.getKeyword()))) {
                 result.add(question);
             }
         }

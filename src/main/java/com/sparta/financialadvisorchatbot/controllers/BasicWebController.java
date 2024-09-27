@@ -24,8 +24,19 @@ public class BasicWebController {
 
     @GetMapping("/chatbot")
     public String getHome(Model model) {
-        int newConversationId = conversationService.getLatestConversationId() + 1;
-        return "redirect:/chatbot/" + newConversationId;
+//        int newConversationId = conversationService.getLatestConversationId() + 1;
+//        return "redirect:/chatbot/" + newConversationId;
+
+        return "home";
+
+    }
+
+    @PostMapping("/chatbot")
+    public String postHome(@RequestAttribute("input") String input, Model model) {
+        model.addAttribute("Conversation", conversationService.getConversation(conversationService.getLatestConversationId()));
+        model.addAttribute("User", input);
+        model.addAttribute("ChatBot", conversationService.getFaqResponse(input));
+        return "redirect:/chatbot/" + conversationService.getLatestConversationId();
     }
 
     @GetMapping("/chatbot/{id}")

@@ -65,4 +65,8 @@ public class OpenAiService {
         }
         return "ERR: Error while generating chat response"; // return response
     }
+
+    public String getMockGptResponse(String userInput) {
+        return "This is the mock GPT response.";
+    }
 }

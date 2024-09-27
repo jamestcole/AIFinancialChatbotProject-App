@@ -22,6 +22,8 @@ public class ConversationService {
     private final ConversationIdRepository conversationIdRepository;
     private final ConversationHistoryRepository conversationHistoryRepository;
     private final FaqService faqService;
+    // Singleton instance of the conversation
+    private ConversationId activeConversation;
 
     @Autowired
     public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService) {
@@ -30,9 +32,25 @@ public class ConversationService {
         this.faqService = faqService;
     }
 
-    public ConversationId startConversation() {
-        ConversationId conversation = new ConversationId();
-        return conversationIdRepository.save(conversation);
+//    public ConversationId startConversation() {
+//        ConversationId conversation = new ConversationId();
+//        return conversationIdRepository.save(conversation);
+//    }
+
+    // Singleton method for creating or retrieving the active conversation
+    public synchronized ConversationId startConversation() {
+        // Check if there's already an active conversation
+        if (activeConversation == null) {
+            // Create and store the active conversation in the repository
+            activeConversation = new ConversationId();
+            activeConversation = conversationIdRepository.save(activeConversation);
+        }
+        return activeConversation; // Return the active conversation
+    }
+
+    // Optional: Method to end the current conversation and reset the singleton
+    public synchronized void endConversation() {
+        activeConversation = null; // Reset the active conversation
     }
 
     public void saveConversationHistory(Integer conversationId, String userInput, String botResponse) {

@@ -9,11 +9,12 @@ import java.util.Set;
 @Table(name = "conversation_ids", schema = "question_bank_chatbot")
 public class ConversationId {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "conversation_id", nullable = false)
     private Integer id;
 
-    @OneToMany(mappedBy = "conversation")
-    private Set<ConversationHistory> conversationHistories = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ConversationHistory> conversationHistories;
 
     public Integer getId() {
         return id;

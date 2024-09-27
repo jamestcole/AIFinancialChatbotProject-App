@@ -3,8 +3,6 @@ package com.sparta.financialadvisorchatbot.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "conversation_history", schema = "question_bank_chatbot")
 public class ConversationHistory {
@@ -32,11 +30,11 @@ public class ConversationHistory {
         this.id = id;
     }
 
-    public com.sparta.financialadvisorchatbot.entities.ConversationId getConversation() {
+    public ConversationId getConversation() {
         return conversation;
     }
 
-    public void setConversation(com.sparta.financialadvisorchatbot.entities.ConversationId conversation) {
+    public void setConversation(ConversationId conversation) {
         this.conversation = conversation;
     }
 
@@ -54,17 +52,6 @@ public class ConversationHistory {
 
     public void setResponse(String response) {
         this.response = response;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        if (this.id == null) {
-            this.id = new ConversationHistoryId();
-        }
-        this.id.setCreatedAt(createdAt);
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return this.id.getCreatedAt();
     }
 
 }

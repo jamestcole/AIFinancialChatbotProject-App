@@ -5,17 +5,18 @@ import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
 import com.sparta.financialadvisorchatbot.entities.ConversationId;
 import com.sparta.financialadvisorchatbot.repositories.ConversationHistoryRepository;
 import com.sparta.financialadvisorchatbot.repositories.ConversationIdRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ConversationService {
 
+    private static final Logger log = LoggerFactory.getLogger(ConversationService.class);
     private final ConversationIdRepository conversationIdRepository;
     private final ConversationHistoryRepository conversationHistoryRepository;
     private final FaqService faqService;
@@ -36,14 +37,19 @@ public class ConversationService {
         ConversationId conversation = conversationIdRepository.findById(conversationId)
                 .orElseThrow(() -> new IllegalArgumentException("Conversation not found."));
 
+        ConversationHistoryId historyId = new ConversationHistoryId();
+        historyId.setConversationId(conversationId);
+        historyId.setCreatedAt(LocalDateTime.now());
+
         ConversationHistory conversationHistory = new ConversationHistory();
+        conversationHistory.setId(historyId);
         conversationHistory.setConversation(conversation);
         conversationHistory.setInput(userInput);
         conversationHistory.setResponse(botResponse);
-        conversationHistory.setCreatedAt(LocalDateTime.now());
 
         conversationHistoryRepository.save(conversationHistory);
     }
+
 
     public List<ConversationHistory> getConversationHistory(Integer conversationId) {
         List<ConversationHistory> conversationHistory = conversationHistoryRepository.findByConversation_Id(conversationId);
@@ -53,12 +59,23 @@ public class ConversationService {
         return conversationHistory;
     }
 
-    public String handleUserInput(Integer conversationId, String userInput) {
-        return "hey";
-    }
-
-
     public String getStartMessage() {
         return "Hello, I am Sparta Global's Financial Advisor Chatbot! How can I help you today?";
     }
+
+    public String handleUserInput(Integer conversationId, String userInput) {
+        // Check for FAQ match
+        String faqResponse = checkForFAQMatch(userInput);
+        if (faqResponse != null) {
+            return faqResponse; // Return the FAQ response
+        } else {
+            // If no match, prompt for more specifics
+            return "Could you please be a little more specific?";
+        }
+    }
+
+    private String checkForFAQMatch(String userInput) {
+        return "faq response";
+    }
+
 }

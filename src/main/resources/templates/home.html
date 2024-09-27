@@ -14,40 +14,23 @@
     <div class="central-box">
         <div class="chat-section">
             <div class="message-container chatbot">
-                <p>Hello! How can I assist you today?</p>
+                <p th:text="${startMessage}">Hello! How can I assist you today?</p>
             </div>
-            <div class="message-container user">
-                <p>I need help with my order.</p>
+            <div th:each="message : ${conversationHistory}" class="message-container">
+                <p th:if="${message.input}" th:text="${message.input}" class="user"></p>
+                <p th:if="${message.response}" th:text="${message.response}" class="chatbot"></p>
             </div>
-            <div class="message-container chatbot">
-                <p>Sure! Please provide your order number.</p>
-            </div>
-            <div class="message-container user">
-                <p>I need help with my order.</p>
-            </div>
-            <div class="message-container chatbot">
-                <p>Sure! Please provide your order number.</p>
-            </div>
-            <div class="message-container user">
-                <p>I need help with my order.</p>
-            </div>
-            <div class="message-container chatbot">
-                <p>Sure! Please provide your order number.</p>
-            </div>
-            <div class="message-container user">
-                <p>I need help with my order.</p>
-            </div>
-            <div class="message-container chatbot">
-                <p>Sure! Please provide your order number.</p>
-            </div>
-
         </div>
+
 
         <!-- Query input and send button section -->
         <div class="query-section">
-            <input type="text" placeholder="Type your message here..." />
-            <button>></button>
+            <form action="#" th:action="@{/ask}" method="post">
+                <input type="text" name="userInput" placeholder="Type your message here..." required />
+                <button type="submit">></button>
+            </form>
         </div>
+
     </div>
 </div>
 

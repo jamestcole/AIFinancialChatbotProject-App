@@ -1,16 +1,19 @@
 package com.sparta.financialadvisorchatbot.controllers;
 
+import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
+import com.sparta.financialadvisorchatbot.entities.ConversationId;
 import com.sparta.financialadvisorchatbot.service.ConversationService;
 import com.sparta.financialadvisorchatbot.service.FaqService;
 import com.sparta.financialadvisorchatbot.service.FinancialAdvisorService;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 public class BasicWebController {
@@ -28,11 +31,24 @@ public class BasicWebController {
 
     @GetMapping("/chatbot")
     public String getHome(Model model) {
-//        int newConversationId = conversationService.getLatestConversationId() + 1;
-//        return "redirect:/chatbot/" + newConversationId;
+        model.addAttribute("startMessage", conversationService.getStartMessage());
+        return "home";
+    }
+
+    @PostMapping("/ask")
+    public String askQuestion(@RequestParam("userInput") String userInput, Model model) {
+        ConversationId conversationId = conversationService.startConversation();
+
+        String botResponse = conversationService.handleUserInput(conversationId.getId(), userInput);
+
+        conversationService.saveConversationHistory(conversationId.getId(), userInput, botResponse);
+
+        List<ConversationHistory> conversationHistory = conversationService.getConversationHistory(conversationId.getId());
+        model.addAttribute("conversationHistory", conversationHistory);
+        model.addAttribute("currentYear", LocalDate.now().getYear());
+        model.addAttribute("startMessage", conversationService.getStartMessage());
 
         return "home";
-
     }
 //
 //    @PostMapping("/chatbot")

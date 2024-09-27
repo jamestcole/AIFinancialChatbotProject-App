@@ -1,14 +1,9 @@
 package com.sparta.financialadvisorchatbot.service;
 
 import com.sparta.financialadvisorchatbot.entities.Conversation;
-import com.sparta.financialadvisorchatbot.models.ConversationState;
 import com.sparta.financialadvisorchatbot.repositories.ConversationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class ConversationService {
@@ -62,5 +57,13 @@ public class ConversationService {
     public Integer getLatestConversationId() {
         Conversation latestConversation = getLatestConversation();
         return latestConversation !=  null ? latestConversation.getId() : null;
+    }
+
+    public Conversation getConversationById(Integer conversationId) {
+        return conversationRepository.findById(conversationId).orElse(null);
+    }
+
+    public String getStartMessage() {
+        return "Hello, I am Sparta Global's Financial Advisor Chatbot! How can I help you today?";
     }
 }

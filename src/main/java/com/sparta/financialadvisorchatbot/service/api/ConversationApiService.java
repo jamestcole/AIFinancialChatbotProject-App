@@ -11,9 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ConversationApiService {
@@ -41,11 +40,10 @@ public class ConversationApiService {
 
     public Page<ConversationId> getAllConversations(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
-        return conversationIdRepository.findAll(pageable);
+        Page<ConversationId> allConversations = conversationIdRepository.findAll(pageable);
+        if(allConversations.getContent().isEmpty()){
+            //throw 404 error
+        }
+        return allConversations;
     }
-
-
-
-
-
 }

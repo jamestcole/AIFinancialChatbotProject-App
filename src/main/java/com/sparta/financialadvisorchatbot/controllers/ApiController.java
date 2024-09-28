@@ -3,26 +3,20 @@ package com.sparta.financialadvisorchatbot.controllers;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
 import com.sparta.financialadvisorchatbot.entities.ConversationId;
-import com.sparta.financialadvisorchatbot.service.ConversationService;
 import com.sparta.financialadvisorchatbot.service.api.ConversationApiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
-@RequestMapping("/api/sg-financial-chatbot/v1.0/")
+@RequestMapping("/api/sg-financial-chatbot/v1.0")
 public class ApiController {
 
     private final ConversationApiService conversationApiService;
@@ -60,25 +54,4 @@ public class ApiController {
         ).toList();
         return ResponseEntity.ok(CollectionModel.of(conversations));
     }
-
-//    @GetMapping("/chatbot/{id}")
-//    public ResponseEntity<List<ConversationHistory>> getEntireConversation(@PathVariable Integer id) {
-//        return ResponseEntity.ok(conversationService.getConversationById(id));
-//    }
-//
-//    @
-//
-//    @PostMapping("/chatbot/{id}")
-//    public ResponseEntity<Map<String, String>> processInput(@PathVariable Integer id, @RequestBody Map<String, String> request) {
-//        String userInput = request.get("input");
-//        String storedInput = conversationService.storeUserInput(userInput, id);
-//        String response = conversationService.generateResponse(storedInput, id);
-//        String storedResponse = conversationService.storeResponse(response, id);
-//
-//        Map<String, String> result = new HashMap<>();
-//        result.put("input", storedInput);
-//        result.put("response", storedResponse);
-//
-//        return ResponseEntity.ok(result);
-//    }
 }

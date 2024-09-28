@@ -1,71 +1,81 @@
 package com.sparta.financialadvisorchatbot.service;
 
-import com.sparta.financialadvisorchatbot.models.ConversationState;
+import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
+import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
+import com.sparta.financialadvisorchatbot.entities.ConversationId;
+import com.sparta.financialadvisorchatbot.repositories.ConversationHistoryRepository;
+import com.sparta.financialadvisorchatbot.repositories.ConversationIdRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ConversationService {
-    /*
 
+    private static final Logger log = LoggerFactory.getLogger(ConversationService.class);
+    private final ConversationIdRepository conversationIdRepository;
+    private final ConversationHistoryRepository conversationHistoryRepository;
     private final FaqService faqService;
-    private final OpenAiService openAIService;
 
     @Autowired
-    public ConversationService(FaqService faqService, OpenAiService openAIService) {
+    public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService) {
+        this.conversationIdRepository = conversationIdRepository;
+        this.conversationHistoryRepository = conversationHistoryRepository;
         this.faqService = faqService;
-        this.openAIService = openAIService;
     }
 
-    //Temporary hashmap (replace with post to SQL database)
-    private Map<String, ConversationState> userSessions = new HashMap<>();
+    public ConversationId startConversation() {
+        ConversationId conversationId = new ConversationId();
+        return conversationIdRepository.save(conversationId);
+    }
 
-    //Process user input and manage conversation state
-    public String processUserInput(String userId, String userInput) throws IOException {
-        //Retrieve conversation state -> create new one if it does not exist
-        ConversationState state = userSessions.getOrDefault(userId, new ConversationState());
+    public void saveConversationHistory(Integer conversationId, String userInput, String botResponse) {
+        ConversationId conversation = conversationIdRepository.findById(conversationId)
+                .orElseThrow(() -> new IllegalArgumentException("Conversation not found."));
 
-        if (state.isAwaitingClarification()) {
-            //If chatbot is awaiting clarification - use next response with GPT model
-            String gptResponse = openAIService.getChatResponse(userInput,"You are a financial advisor");
-            state.setAwaitingClarification(false);
-            state.setLastResponse(gptResponse);
-            userSessions.put(userId, state);
-            return gptResponse + "\nCan I help you with anything else?";
+        ConversationHistoryId historyId = new ConversationHistoryId();
+        historyId.setConversationId(conversationId);
+        historyId.setCreatedAt(LocalDateTime.now());
+
+        ConversationHistory conversationHistory = new ConversationHistory();
+        conversationHistory.setId(historyId);
+        conversationHistory.setConversation(conversation);
+        conversationHistory.setInput(userInput);
+        conversationHistory.setResponse(botResponse);
+
+        conversationHistoryRepository.save(conversationHistory);
+    }
+
+
+    public List<ConversationHistory> getConversationHistory(Integer conversationId) {
+        List<ConversationHistory> conversationHistory = conversationHistoryRepository.findByConversation_Id(conversationId);
+        if (conversationHistory.isEmpty()) {
+            throw new IllegalArgumentException("No conversation history found for this ID.");
         }
+        return conversationHistory;
+    }
 
-        //Try finding the closest FAQ match
-        String faqAnswer = faqService.findClosestFaq(userInput);
+    public String getStartMessage() {
+        return "Hello, I am Sparta Global's Financial Advisor Chatbot! How can I help you today?";
+    }
 
-        if (faqAnswer != null) {
-            //Save the response (replace with DB) and update state
-            state.setLastResponse(faqAnswer);
-            userSessions.put(userId, state);
-            return faqAnswer + "\nCan I help you with anything else?";
+    public String handleUserInput(Integer conversationId, String userInput) {
+        // Check for FAQ match
+        String faqResponse = checkForFAQMatch(userInput);
+        if (faqResponse != null) {
+            return faqResponse; // Return the FAQ response
         } else {
-            //Ask for clarification if no FAQ match is found
-            state.setLastQuestion(userInput);
-            state.setAwaitingClarification(true);
-            userSessions.put(userId, state);
-            return "I couldn't find an exact match. Could you please be more specific about your question?";
+            // If no match, prompt for more specifics
+            return "Could you please be a little more specific?";
         }
     }
 
-    public String processClarification(String userId, String userInput) throws IOException {
-        ConversationState state = userSessions.get(userId);
-        if (state == null || !state.isAwaitingClarification()) {
-            return "I need more context for your query. Could you please start over?";
-        }
-
-        String gptResponse = openAIService.getChatResponse(userInput, "You are a financial advisor");
-        state.setAwaitingClarification(false);
-        state.setLastResponse(gptResponse);
-        userSessions.put(userId, state);
-        return gptResponse + "\nCan I help you with anything else?";
+    private String checkForFAQMatch(String userInput) {
+        return "faq response";
     }
-     */
+
 }

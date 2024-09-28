@@ -75,4 +75,8 @@ public class OpenAiService {
         responseModel.setBotResponse(jsonNode.path("choices").get(0).path("message").path("content").asText());
         return responseModel;
     }
+
+    public String getMockGptResponse(String userInput) {
+        return "This is the mock GPT response.";
+    }
 }

@@ -1,37 +1,40 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title th:text="${pageTitle}">Default Title</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" crossorigin="anonymous">
+    <title>Home</title>
+    <link th:href="@{/style.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
+<div class="header">
+    Financial Chatbot Central
+</div>
+<div class="main-section">
+    <div class="central-box">
+        <div class="chat-section">
+            <div class="message-container chatbot">
+                <p th:text="${startMessage}">Hello! How can I assist you today?</p>
+            </div>
+            <div th:each="message : ${conversationHistory}" class="message-container">
+                <p th:if="${message.input}" th:text="${message.input}" class="user"></p>
+                <p th:if="${message.response}" th:text="${message.response}" class="chatbot"></p>
+            </div>
+        </div>
 
-<header>
-    <h1 th:text="'Welcome to ' + ${siteName}">Welcome to Your Website</h1>
-</header>
 
-<nav>
-    <ul>
-        <li><a th:href="@{/}">Home</a></li>
-        <li><a th:href="@{/about}">About</a></li>
-        <li><a th:href="@{/contact}">Contact</a></li>
-    </ul>
-</nav>
+        <!-- Query input and send button section -->
+        <div class="query-section">
+            <form action="#" th:action="@{/ask}" method="post">
+                <input type="text" name="userInput" placeholder="Type your message here..." required />
+                <button type="submit">></button>
+            </form>
+        </div>
 
-<main>
-    <section>
-        <h2>Main Content</h2>
-        <p th:text="${message}"></p>
-<!--        make me an if statment in thymeleaf that checks if the message equals "Hello World!"-->
-        <p th:if="${message == 'Hello!'}">Hello World!</p>
-    </section>
-</main>
+    </div>
+</div>
 
-<footer>
+<footer class = "footer">
     <p>&copy; <span th:text="${currentYear}">2024</span> Your Company. All rights reserved.</p>
 </footer>
 

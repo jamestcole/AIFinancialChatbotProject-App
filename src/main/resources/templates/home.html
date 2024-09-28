@@ -13,19 +13,21 @@
 <div class="main-section">
     <div class="central-box">
         <div class="chat-section">
-            <div class="message-container chatbot">
-                <p th:text="${startMessage}">Hello! How can I assist you today?</p>
+            <div th:if="${startMessage}" class="message-container chatbot">
+                <p th:text="${startMessage}"></p>
             </div>
+
+            <!-- Loop through the conversation history -->
             <div th:each="message : ${conversationHistory}" class="message-container">
+                <!-- Show user's input -->
                 <p th:if="${message.input}" th:text="${message.input}" class="user"></p>
+                <!-- Show chatbot's response -->
                 <p th:if="${message.response}" th:text="${message.response}" class="chatbot"></p>
             </div>
         </div>
 
-
-        <!-- Query input and send button section -->
         <div class="query-section">
-            <form action="#" th:action="@{/ask}" method="post">
+            <form action="#" th:action="@{/chat}" method="post">
                 <input type="text" name="userInput" placeholder="Type your message here..." required />
                 <button type="submit">></button>
             </form>

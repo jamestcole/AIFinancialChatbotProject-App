@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ConversationService {
@@ -22,17 +22,39 @@ public class ConversationService {
     private final ConversationIdRepository conversationIdRepository;
     private final ConversationHistoryRepository conversationHistoryRepository;
     private final FaqService faqService;
+    private final OpenAiService openAiService;
+    // Singleton instance of the conversation
+    private ConversationId activeConversation;
+    //Track tier of conversation
+    private boolean waitingForClarification = false;
 
     @Autowired
-    public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService) {
+    public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService, OpenAiService openAiService) {
         this.conversationIdRepository = conversationIdRepository;
         this.conversationHistoryRepository = conversationHistoryRepository;
         this.faqService = faqService;
+        this.openAiService = openAiService;
     }
 
-    public ConversationId startConversation() {
-        ConversationId conversationId = new ConversationId();
-        return conversationIdRepository.save(conversationId);
+//    public ConversationId startConversation() {
+//        ConversationId conversation = new ConversationId();
+//        return conversationIdRepository.save(conversation);
+//    }
+
+    // Singleton method for creating or retrieving the active conversation
+    public synchronized ConversationId startConversation() {
+        // Check if there's already an active conversation
+        if (activeConversation == null) {
+            // Create and store the active conversation in the repository
+            activeConversation = new ConversationId();
+            activeConversation = conversationIdRepository.save(activeConversation);
+        }
+        return activeConversation; // Return the active conversation
+    }
+
+    // Optional: Method to end the current conversation and reset the singleton
+    public synchronized void endConversation() {
+        activeConversation = null; // Reset the active conversation
     }
 
     public void saveConversationHistory(Integer conversationId, String userInput, String botResponse) {
@@ -65,27 +87,34 @@ public class ConversationService {
         return "Hello, I am Sparta Global's Financial Advisor Chatbot! How can I help you today?";
     }
 
-    public String handleUserInput(Integer conversationId, String userInput) {
+    public List<String> handleUserInput(Integer conversationId, String userInput) {
+
+        if (waitingForClarification) {
+            waitingForClarification = false;
+
+//            String openAiResponse = openAiService.getChatResponse(userInput);
+            String openAiResponse = "";
+            return List.of(openAiResponse);
+        }
+
+
+
         // Check for FAQ match
-        String faqResponse = checkForFAQMatch(userInput);
-        if (faqResponse != null) {
-
-
-            ArrayList<Faq> faqs = faqService.getFAQs(userInput);
-            if (!faqs.isEmpty()) {
-                for(Faq faq : faqs) {
-
-                }
-            }
-            return faqResponse; // Return the FAQ response
+        List<Faq> faqResponse = checkForFAQMatch(userInput);
+        if (faqResponse != null && !faqResponse.isEmpty()) {
+            return faqResponse.stream()
+                    .map(Faq::getAnswer) // Replace 'getAnswer' with the appropriate method from Faq
+                    .collect(Collectors.toList());
         } else {
-            // If no match, prompt for more specifics
-            return "Could you please be a little more specific?";
+            // If no match, return a list with a single string prompting for more specifics
+            waitingForClarification = true;
+            return List.of("Could you please be a little more specific?");
         }
     }
 
-    private String checkForFAQMatch(String userInput) {
-        return "faq response";
+
+    private List<Faq> checkForFAQMatch(String userInput) {
+        return faqService.getFAQs(userInput);
     }
 
 }

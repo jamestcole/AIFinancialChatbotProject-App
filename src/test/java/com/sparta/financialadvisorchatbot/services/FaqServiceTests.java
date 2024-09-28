@@ -51,6 +51,12 @@ public class FaqServiceTests {
         question3.setAnswer("by saving even more money");
         question4.setAnswer("stocks are a medieval device to put bad people in");
         question5.setAnswer("by saving even more money than that");
+
+        question1.setId(1);
+        question2.setId(2);
+        question3.setId(3);
+        question4.setId(4);
+        question5.setId(5);
         questions = new ArrayList<>(List.of(question1, question2, question3, question4));
     }
 

@@ -1,6 +1,7 @@
 package com.sparta.financialadvisorchatbot.service;
 
 import com.sparta.financialadvisorchatbot.entities.Faq;
+import com.sparta.financialadvisorchatbot.entities.Keyword;
 import com.sparta.financialadvisorchatbot.repositories.FaqRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +20,27 @@ public class FaqService {
         ArrayList<Faq> questions = new ArrayList<>(questionRepository.findAll());
         String[] words = input.split(" ");
 
-        ArrayList<Faq> result = new ArrayList<>();
+        Map<Faq, Integer> topHits = new HashMap<Faq,Integer>();
 
-        for (Faq question : questions) {
-            if (Arrays.stream(words).anyMatch(word -> word.contains(question.getKeyword()))) {
-                result.add(question);
+        for(Faq faq : questions){
+            Set<Keyword> keywords = faq.getKeywords();
+            for (Keyword keyword : keywords) {
+                if (Arrays.stream(words).anyMatch(word -> word.contains(keyword.getKeyword()))) {
+                    if(topHits.containsKey(faq)){
+                        topHits.put(faq, topHits.get(faq) + 1);
+                    }
+                    else topHits.put(faq, 1);
+                }
             }
         }
 
-        return result.stream().limit(3).collect(Collectors.toCollection(ArrayList::new));
+        return topHits
+                .entrySet()
+                .stream()
+                .sorted((entry1, entry2)-> entry2.getValue().compareTo(entry1.getValue()))
+                .limit(3)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(ArrayList::new));
+
     }
 }

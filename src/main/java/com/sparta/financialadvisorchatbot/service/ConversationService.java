@@ -3,6 +3,7 @@ package com.sparta.financialadvisorchatbot.service;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
 import com.sparta.financialadvisorchatbot.entities.ConversationId;
+import com.sparta.financialadvisorchatbot.entities.Faq;
 import com.sparta.financialadvisorchatbot.repositories.ConversationHistoryRepository;
 import com.sparta.financialadvisorchatbot.repositories.ConversationIdRepository;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -67,6 +69,14 @@ public class ConversationService {
         // Check for FAQ match
         String faqResponse = checkForFAQMatch(userInput);
         if (faqResponse != null) {
+
+
+            ArrayList<Faq> faqs = faqService.getFAQs(userInput);
+            if (!faqs.isEmpty()) {
+                for(Faq faq : faqs) {
+
+                }
+            }
             return faqResponse; // Return the FAQ response
         } else {
             // If no match, prompt for more specifics

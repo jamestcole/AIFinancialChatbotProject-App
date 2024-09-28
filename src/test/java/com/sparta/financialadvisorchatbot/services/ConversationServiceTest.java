@@ -136,13 +136,13 @@ public class ConversationServiceTest {
         assertEquals(expected, thrown.getMessage());
     }
 
-    @Test
-    void testHandleUserInputReturnsFaqResponseIfFaqResponseExists(){
-        when(faqService.getFAQs(any(String.class))).thenReturn(new ArrayList<>());
-    }
+//    @Test
+//    void testHandleUserInputReturnsFaqResponseIfFaqResponseExists(){
+//        when(faqService.getFAQs(any(String.class))).thenReturn(new ArrayList<>());
+//    }
 
-    @Test
-    void testHandleUserInputReturnsGptResponseIfNoFaqResponseExists(){
-
-    }
+//    @Test
+//    void testHandleUserInputReturnsGptResponseIfNoFaqResponseExists(){
+//
+//    }
 }

@@ -3,6 +3,7 @@ package com.sparta.financialadvisorchatbot.service.api;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
 import com.sparta.financialadvisorchatbot.entities.ConversationId;
+import com.sparta.financialadvisorchatbot.exceptions.GenericNotFoundError;
 import com.sparta.financialadvisorchatbot.repositories.ConversationHistoryRepository;
 import com.sparta.financialadvisorchatbot.repositories.ConversationIdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,13 +27,13 @@ public class ConversationApiService {
     }
 
     public ConversationHistory getSingleRequestResponse(ConversationHistoryId conversationHistoryId) {
-        return conversationHistoryRepository.findById(conversationHistoryId).orElseThrow();
+        return conversationHistoryRepository.findById(conversationHistoryId).orElseThrow(()-> new GenericNotFoundError("Unable to find request/response"));
     }
 
     public List<ConversationHistory> getEntireConversationHistoryByConversationId(Integer conversationId){
         List<ConversationHistory> conversation = conversationHistoryRepository.findByConversation_Id(conversationId);
         if(conversation.isEmpty()){
-            //throw 404 error;
+            throw new GenericNotFoundError("No conversation found with id: " + conversationId);
         }
         return conversation;
     }
@@ -42,7 +42,7 @@ public class ConversationApiService {
         Pageable pageable = PageRequest.of(page, size);
         Page<ConversationId> allConversations = conversationIdRepository.findAll(pageable);
         if(allConversations.getContent().isEmpty()){
-            //throw 404 error
+            throw new GenericNotFoundError("No conversations found!");
         }
         return allConversations;
     }

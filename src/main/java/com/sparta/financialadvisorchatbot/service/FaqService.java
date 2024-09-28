@@ -18,14 +18,13 @@ public class FaqService {
 
     public ArrayList<Faq> getFAQs(String input) {
         ArrayList<Faq> questions = new ArrayList<>(questionRepository.findAll());
-        String[] words = input.split(" ");
 
-        Map<Faq, Integer> topHits = new HashMap<Faq,Integer>();
+        Map<Faq, Integer> topHits = new HashMap<>();
 
         for(Faq faq : questions){
             Set<Keyword> keywords = faq.getKeywords();
             for (Keyword keyword : keywords) {
-                if (Arrays.stream(words).anyMatch(word -> word.contains(keyword.getKeyword()))) {
+                if (input.toLowerCase().contains(keyword.getKeyword().toLowerCase())) {
                     if(topHits.containsKey(faq)){
                         topHits.put(faq, topHits.get(faq) + 1);
                     }

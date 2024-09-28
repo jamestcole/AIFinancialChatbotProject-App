@@ -67,7 +67,7 @@ class ConversationServiceTests {
         conversationHistory.setConversation(conversationId);
         conversationHistory.setInput(userInput);
         conversationHistory.setResponse(botResponse);
-        conversationHistory.setCreatedAt(LocalDateTime.now());
+//        conversationHistory.setCreatedAt(LocalDateTime.now());
 
         verify(conversationHistoryRepository, times(1)).save(any(ConversationHistory.class));
     }
@@ -99,7 +99,7 @@ class ConversationServiceTests {
         conversationHistory.setResponse("Bot response");
         historyList.add(conversationHistory);
 
-        when(conversationHistoryRepository.findByConversation_ConversationId(1)).thenReturn(historyList);
+        when(conversationHistoryRepository.findByConversation_Id(1)).thenReturn(historyList);
 
         List<ConversationHistory> result = conversationService.getConversationHistory(1);
 
@@ -111,7 +111,7 @@ class ConversationServiceTests {
 
     @Test
     public void testGetConversationHistory_NotFound() {
-        when(conversationHistoryRepository.findByConversation_ConversationId(1)).thenReturn(new ArrayList<>());
+        when(conversationHistoryRepository.findByConversation_Id(1)).thenReturn(new ArrayList<>());
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             conversationService.getConversationHistory(1);

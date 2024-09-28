@@ -4,7 +4,6 @@ import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.entities.ConversationId;
 import com.sparta.financialadvisorchatbot.service.ConversationService;
 import com.sparta.financialadvisorchatbot.service.FaqService;
-import com.sparta.financialadvisorchatbot.service.FinancialAdvisorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,13 +18,12 @@ import java.util.List;
 @Controller
 public class BasicWebController {
 
-    private final FinancialAdvisorService financialAdvisorService;
+
     private final ConversationService conversationService;
     private final FaqService faqService;
 
     @Autowired
-    public BasicWebController(FinancialAdvisorService financialAdvisorService, ConversationService conversationService, FaqService faqService) {
-        this.financialAdvisorService = financialAdvisorService;
+    public BasicWebController(ConversationService conversationService, FaqService faqService) {
         this.conversationService = conversationService;
         this.faqService = faqService;
     }

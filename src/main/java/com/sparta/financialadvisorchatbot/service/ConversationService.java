@@ -92,7 +92,8 @@ public class ConversationService {
         if (waitingForClarification) {
             waitingForClarification = false;
 
-            String openAiResponse = openAiService.getChatResponse(userInput);
+//            String openAiResponse = openAiService.getChatResponse(userInput);
+            String openAiResponse = "";
             return List.of(openAiResponse);
         }
 
@@ -113,7 +114,7 @@ public class ConversationService {
 
 
     private List<Faq> checkForFAQMatch(String userInput) {
-        return faqService.findMatchingFaqs(userInput);
+        return faqService.getFAQs(userInput);
     }
 
 }

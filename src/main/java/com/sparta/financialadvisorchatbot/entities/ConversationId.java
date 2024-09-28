@@ -1,5 +1,6 @@
 package com.sparta.financialadvisorchatbot.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
@@ -13,6 +14,7 @@ public class ConversationId {
     @Column(name = "conversation_id", nullable = false)
     private Integer id;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ConversationHistory> conversationHistories;
 

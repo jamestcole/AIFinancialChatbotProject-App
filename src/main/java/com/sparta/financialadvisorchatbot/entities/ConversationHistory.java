@@ -1,5 +1,6 @@
 package com.sparta.financialadvisorchatbot.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
@@ -9,6 +10,7 @@ public class ConversationHistory {
     @EmbeddedId
     private ConversationHistoryId id;
 
+    @JsonBackReference
     @MapsId("conversationId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "conversation_id", nullable = false)

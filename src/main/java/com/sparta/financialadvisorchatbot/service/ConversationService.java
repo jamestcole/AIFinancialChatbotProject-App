@@ -97,14 +97,24 @@ public class ConversationService {
         }
 
 
+        //check for faq match, I have found similiar questions related to yours, click one
+
 
         // Check for FAQ match
         List<Faq> faqResponse = checkForFAQMatch(userInput);
         if (faqResponse != null && !faqResponse.isEmpty()) {
             return faqResponse.stream()
-                    .map(Faq::getAnswer) // Replace 'getAnswer' with the appropriate method from Faq
+                    .map(Faq::getAnswer)
                     .collect(Collectors.toList());
-        } else {
+        }
+
+
+
+
+
+
+
+        else {
             // If no match, return a list with a single string prompting for more specifics
             waitingForClarification = true;
             return List.of("Could you please be a little more specific?");
@@ -113,7 +123,7 @@ public class ConversationService {
 
 
     private List<Faq> checkForFAQMatch(String userInput) {
-        return faqService.findMatchingFaqs(userInput);
+        return faqService.getFAQs(userInput);
     }
 
 }

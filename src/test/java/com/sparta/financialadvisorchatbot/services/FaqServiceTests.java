@@ -3,14 +3,12 @@ package com.sparta.financialadvisorchatbot.services;
 import com.sparta.financialadvisorchatbot.entities.Faq;
 import com.sparta.financialadvisorchatbot.entities.Keyword;
 import com.sparta.financialadvisorchatbot.repositories.FaqRepository;
-import com.sparta.financialadvisorchatbot.repositories.KeywordRepository;
 import com.sparta.financialadvisorchatbot.service.FaqService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -25,9 +23,6 @@ public class FaqServiceTests {
 
     @Mock
     private FaqRepository questionRepository;
-
-    @Mock
-    private KeywordRepository keywordRepository;
 
     @InjectMocks
     private FaqService faqService;
@@ -78,7 +73,7 @@ public class FaqServiceTests {
         question1.setAnswer("by saving money");
         question2.setAnswer("by saving more money");
         question3.setAnswer("by saving even more money");
-        question4.setAnswer("stocks are a medieval device to put bad people in");
+        question4.setAnswer("credit cards are cards where you don't have money, debit cards you do.");
         question5.setAnswer("by saving even more money than that");
 
         question1.setId(1);
@@ -123,5 +118,13 @@ public class FaqServiceTests {
         when(questionRepository.findAll()).thenReturn(questions);
         List<Faq> faqs = faqService.getFAQs(input);
         assertEquals(expected, faqs.size());
+    }
+    @Test
+    void testGetFaqsReturnsTopFaqWhenMultipleKeywordPresent(){
+        String expected ="credit cards are cards where you don't have money, debit cards you do.";
+        String input = "what is the difference between a credit and debit card?";
+        when(questionRepository.findAll()).thenReturn(questions);
+        List<Faq> faqs = faqService.getFAQs(input);
+        assertEquals(expected, faqs.getFirst().getAnswer());
     }
 }

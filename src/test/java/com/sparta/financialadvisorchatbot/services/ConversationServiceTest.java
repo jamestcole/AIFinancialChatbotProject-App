@@ -1,5 +1,6 @@
 package com.sparta.financialadvisorchatbot.services;
 
+import com.sparta.financialadvisorchatbot.repositories.ConversationHistoryRepository;
 import com.sparta.financialadvisorchatbot.service.ConversationService;
 import com.sparta.financialadvisorchatbot.service.FaqService;
 import com.sparta.financialadvisorchatbot.service.OpenAiService;

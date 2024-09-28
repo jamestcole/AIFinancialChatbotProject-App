@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,29 +103,35 @@ public class ConversationService {
 
 
         // Check for FAQ match
-        List<Faq> faqResponse = checkForFAQMatch(userInput);
-        if (faqResponse != null && !faqResponse.isEmpty()) {
-            return faqResponse.stream()
-                    .map(Faq::getAnswer)
-                    .collect(Collectors.toList());
-        }
-
-
-
-
-
-
-
-        else {
+//        List<Faq> faqResponse = checkForFAQMatch(userInput);
+        if (!checkForFAQMatch(userInput)) {
+            List<String> response = new ArrayList<>();
+            List<Faq> faqs = faqService.getFAQs(userInput);
+                for(int i = 0; i < faqs.size(); i++) {
+                    response.add("Response: " + (i+1) + ": ");
+                    response.add(faqs.get(i).getAnswer());
+                }
+                return response;
+//            return sb.toString(); // Return the FAQ response
+//            return faqResponse.stream()
+//                    .map(Faq::getAnswer)
+//                    .collect(Collectors.toList());
+        } else {
             // If no match, return a list with a single string prompting for more specifics
             waitingForClarification = true;
             return List.of("Could you please be a little more specific?");
         }
     }
 
+    public List<String> splitResponse(String response) {
+        return Arrays.asList(response.split("\\n"));
+    }
 
-    private List<Faq> checkForFAQMatch(String userInput) {
-        return faqService.getFAQs(userInput);
+
+
+
+    private boolean checkForFAQMatch(String userInput) {
+        return faqService.getFAQs(userInput).isEmpty();
     }
 
 }

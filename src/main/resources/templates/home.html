@@ -21,9 +21,11 @@
             <div th:each="message : ${conversationHistory}" class="message-container">
                 <!-- Show user's input -->
                 <p th:if="${message.input}" th:text="${message.input}" class="user"></p>
+
                 <!-- Show chatbot's response -->
-                <p th:if="${message.response}" th:text="${message.response}" class="chatbot"></p>
+                <p th:if="${message.response}" th:utext="${#strings.replace(message.response, '\n', '<br/>')}" class="chatbot"></p>
             </div>
+
         </div>
 
         <div class="query-section">

@@ -16,7 +16,7 @@
         <tr>
             <th>User Input</th>
             <th>Bot Response</th>
-<!--            <th>Timestamp</th>-->
+            <th>Timestamp</th>
         </tr>
         </thead>
         <tbody>
@@ -24,7 +24,7 @@
         <tr th:each="conversation : ${conversation}">
             <td th:text="${conversation.getInput()}">Input</td>
             <td th:text="${conversation.getResponse()}">Response</td>
-<!--            <td th:text="${conversation.getId().getCreatedAt()}">Timestamp</td>-->
+            <td th:text="${conversation.getId().getCreatedAt().toString().replace('T',' ')}">Timestamp</td>
         </tr>
         </tbody>
     </table>

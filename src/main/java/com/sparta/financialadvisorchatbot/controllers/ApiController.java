@@ -6,17 +6,14 @@ import com.sparta.financialadvisorchatbot.entities.ConversationId;
 import com.sparta.financialadvisorchatbot.service.ConversationService;
 import com.sparta.financialadvisorchatbot.service.api.ConversationApiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -34,7 +31,8 @@ public class ApiController {
     }
 
     @GetMapping("/conversations/{id}/messages")
-    public ResponseEntity<EntityModel<ConversationHistory>> getIndividualRequestResponse(@PathVariable Integer id, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdAt) {
+    public ResponseEntity<EntityModel<ConversationHistory>> getIndividualRequestResponse(@PathVariable Integer id,
+                                                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdAt) {
         ConversationHistoryId conversationHistoryId = new ConversationHistoryId();
         conversationHistoryId.setConversationId(id);
         conversationHistoryId.setCreatedAt(createdAt);
@@ -43,19 +41,32 @@ public class ApiController {
     }
 
     @GetMapping("/conversations/{id}")
-    public ResponseEntity<CollectionModel<EntityModel<ConversationHistory>>> getEntireSingleConversation(@PathVariable Integer id) {
-        List<EntityModel<ConversationHistory>> entireConversation = conversationApiService.getEntireConversationHistoryByConversationId(id).stream().map(
-                conversationHistory ->  EntityModel.of(conversationHistory).add(linkTo(methodOn(ApiController.class).getIndividualRequestResponse(conversationHistory.getId().getConversationId(), conversationHistory.getId().getCreatedAt())).withRel("Individual request/response link: "))
-        ).toList();
-        return ResponseEntity.ok(CollectionModel.of(entireConversation));
+    public ResponseEntity<List<ConversationHistory>> getEntireSingleConversation(@PathVariable Integer id) {
+        List<ConversationHistory> entireConversation = conversationApiService.getEntireConversationHistoryByConversationId(id);
+        return ResponseEntity.ok(entireConversation);
     }
 
     @GetMapping("/conversations")
-    public ResponseEntity<List<ConversationId>> getAllConversations(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+    public ResponseEntity<List<ConversationId>> getAllConversations(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                                    @RequestParam(value = "size", defaultValue = "10") int size) {
 
         List<ConversationId> conversationIds = conversationApiService.getAllConversations(page, size).getContent();
         return ResponseEntity.ok(conversationIds);
+    }
+    @GetMapping("/conversations/dates")
+    public ResponseEntity<List<ConversationId>> getAllConversationsBetween(@RequestParam LocalDate from,
+                                                                           @RequestParam LocalDate to,
+                                                                           @RequestParam (defaultValue = "0") Integer page,
+                                                                           @RequestParam (defaultValue = "10") Integer size) {
+        List<ConversationId> conversationsBetweenDateRanges = conversationApiService.getAllConversationsByDateRange(page,size,from,to).getContent();
+        return ResponseEntity.ok(conversationsBetweenDateRanges);
+
+    }
+    @GetMapping("/conversations/containing")
+    public ResponseEntity<List<ConversationId>> getAllConversationsContaining(@RequestParam String keyword,
+                                                                              @RequestParam (defaultValue = "0") Integer page,
+                                                                              @RequestParam (defaultValue = "10") Integer size) {
+        List<ConversationId> conversationsWithKeywords = conversationApiService.getAllConversationsContainingKeyword(keyword, page, size).getContent();
+        return ResponseEntity.ok(conversationsWithKeywords);
     }
 }

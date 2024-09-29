@@ -3,6 +3,7 @@ package com.sparta.financialadvisorchatbot.controllers;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
 import com.sparta.financialadvisorchatbot.entities.ConversationId;
+import com.sparta.financialadvisorchatbot.service.ConversationService;
 import com.sparta.financialadvisorchatbot.service.api.ConversationApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -22,10 +25,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 public class ApiController {
 
     private final ConversationApiService conversationApiService;
+    private final ConversationService conversationService;
 
     @Autowired
-    public ApiController(ConversationApiService conversationApiService) {
+    public ApiController(ConversationApiService conversationApiService, ConversationService conversationService) {
         this.conversationApiService = conversationApiService;
+        this.conversationService = conversationService;
     }
 
     @GetMapping("/conversations/{id}/messages")
@@ -46,30 +51,11 @@ public class ApiController {
     }
 
     @GetMapping("/conversations")
-    public ResponseEntity<CollectionModel<EntityModel<CollectionModel<EntityModel<ConversationHistory>>>>> getAllConversations(
+    public ResponseEntity<List<ConversationId>> getAllConversations(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
         List<ConversationId> conversationIds = conversationApiService.getAllConversations(page, size).getContent();
-        List<EntityModel<CollectionModel<EntityModel<ConversationHistory>>>> conversations = conversationIds.stream().map(conversationId -> {
-            List<EntityModel<ConversationHistory>> conversationHistoryModels = conversationApiService
-                    .getEntireConversationHistoryByConversationId(conversationId.getId())
-                    .stream()
-                    .map(conversationHistory -> EntityModel.of(conversationHistory)
-                            .add(linkTo(methodOn(ApiController.class)
-                                    .getIndividualRequestResponse(conversationHistory.getId().getConversationId(),
-                                            conversationHistory.getId().getCreatedAt()))
-                                    .withRel("individual-request-response-link")))
-                    .toList();
-            CollectionModel<EntityModel<ConversationHistory>> conversationHistoryCollectionModel = CollectionModel.of(conversationHistoryModels);
-            return EntityModel.of(conversationHistoryCollectionModel)
-                    .add(linkTo(methodOn(ApiController.class)
-                            .getEntireSingleConversation(conversationId.getId()))
-                            .withRel("conversation-link"));
-        }).toList();
-
-        CollectionModel<EntityModel<CollectionModel<EntityModel<ConversationHistory>>>> collectionModel = CollectionModel.of(conversations);
-        collectionModel.add(linkTo(methodOn(ApiController.class).getAllConversations(page, size)).withSelfRel());
-        return ResponseEntity.ok(collectionModel);
+        return ResponseEntity.ok(conversationIds);
     }
 }

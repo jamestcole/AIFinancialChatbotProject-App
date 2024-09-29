@@ -157,3 +157,8 @@ body {
 .footer p {
     margin: 0; /* Remove default margin */
 }
+
+.btn-sparta {
+    background-color: #E33661;
+    color: white;
+}

@@ -1,72 +1,62 @@
 package com.sparta.financialadvisorchatbot.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.financialadvisorchatbot.exceptions.ResponseParsingError;
+import com.sparta.financialadvisorchatbot.models.OpenAiRequest;
+import com.sparta.financialadvisorchatbot.models.OpenAiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class OpenAiService {
+    private final RestTemplate restTemplate;
 
     @Value("${openai.api.key}")
     private String apiKey;
 
-    private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-    private final RestTemplate restTemplate;
+    @Value("${openai.api.endpoint}")
+    private String endpoint;
+
+    @Value("${openai.api.prompt}")
+    private String prompt;
 
     @Autowired
     public OpenAiService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public String getChatResponse(String userInput){
+    public String getResponse(String userInput) {
+        String url = endpoint;
 
         HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        headers.set("api-key", apiKey);
 
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(apiKey);
+        OpenAiRequest body = new OpenAiRequest();
 
-        userInput = InputValidation.validateInput(userInput);
+        List<OpenAiRequest.Message> messages = new ArrayList<>();
+        messages.add(new OpenAiRequest.Message("system", prompt));
+        messages.add(new OpenAiRequest.Message("user", userInput));
 
-        Map<String, Object> requestBody = new HashMap<String, Object>();
-        requestBody.put("model", "gpt-4o");
-        requestBody.put("messages", List.of(
-//                Map.of("role","system","content",chatPrompt),
-                Map.of("role","user","content",userInput)
-        ));
-        requestBody.put("max_tokens", 100);
+        body.setMessages(messages);
 
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody,headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_API_URL, request, String.class);
-        if(response.getStatusCode().is2xxSuccessful()){
+        HttpEntity<OpenAiRequest> requestEntity = new HttpEntity<>(body, headers);
 
-            //todo change to create new GptResponseModel ie. GptResponseModel chatResponse = new GptResponseModel(params from response)
+        ResponseEntity<OpenAiResponse> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, OpenAiResponse.class);
 
-            try{
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode jsonNode = mapper.readTree(response.getBody());
-                return jsonNode.path("choices").get(0).path("message").path("content").asText();
+        if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
+            List<OpenAiResponse.Choice> choices = responseEntity.getBody().getChoices();
+            if (!choices.isEmpty()) {
+                return choices.get(0).getMessage().getContent();
+            } else {
+                throw new RuntimeException("No choices found in response from OpenAI API.");
             }
-            catch (JsonProcessingException e){
-                throw new ResponseParsingError("ERR: Unable to read chatbot response");
-            }
+        } else {
+            throw new RuntimeException("Failed to get response from OpenAI API: " + responseEntity.getStatusCode());
         }
-        return "ERR: Error while generating chat response"; // return response
-    }
-
-    public String getMockGptResponse(String userInput) {
-        return "This is the mock GPT response.";
     }
 }

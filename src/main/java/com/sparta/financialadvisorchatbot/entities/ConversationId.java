@@ -1,5 +1,6 @@
 package com.sparta.financialadvisorchatbot.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;

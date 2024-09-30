@@ -4,8 +4,9 @@ import com.sparta.financialadvisorchatbot.service.InputValidation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestComponent;
 
-@SpringBootTest
+@TestComponent
 public class InputValidationTest {
 
     @Test
@@ -15,9 +16,15 @@ public class InputValidationTest {
         Assertions.assertEquals(expected, actual);
     }
     @Test
-    void testInputValidationReturnsEmptyStringIfEmptyOrNull(){
+    void testInputValidationReturnsTryAgainStringIfNull(){
         String expected = "please tell me I have not entered any text, and politely ask me to try again";
         String actual = InputValidation.validateInput(null);
+        Assertions.assertEquals(expected, actual);
+    }
+    @Test
+    void testInputValidationReturnsTryAgainStringIfEmpty(){
+        String expected = "please tell me I have not entered any text, and politely ask me to try again";
+        String actual = InputValidation.validateInput("");
         Assertions.assertEquals(expected, actual);
     }
 

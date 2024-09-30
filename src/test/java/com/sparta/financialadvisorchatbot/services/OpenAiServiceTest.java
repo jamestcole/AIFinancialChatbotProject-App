@@ -5,28 +5,26 @@ import com.sparta.financialadvisorchatbot.service.OpenAiService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootTest
 @TestPropertySource(properties = {
         "openai.api.key=test-api-key"
 })
 @ExtendWith(MockitoExtension.class)
 public class OpenAiServiceTest {
 
-    @MockBean
+    @Mock
     private RestTemplate restTemplate;
 
-    @Autowired
+    @InjectMocks
     private OpenAiService openAiService;
 
     @Test
@@ -38,7 +36,7 @@ public class OpenAiServiceTest {
                 .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
 
         String userMessage = "This is a test message";
-        String actual = openAiService.getResponse(userMessage);
+        String actual = openAiService.getResponse(userMessage).getResponse();
         Assertions.assertEquals(expected,actual);
     }
     @Test
@@ -48,6 +46,15 @@ public class OpenAiServiceTest {
         Mockito.when(restTemplate.postForEntity(Mockito.any(String.class), Mockito.any(HttpEntity.class), Mockito.any(Class.class)))
                 .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
 
+        String userMessage = "This is a test message";
+        Assertions.assertThrows(ResponseParsingError.class, () -> {
+            openAiService.getResponse(userMessage);
+        });
+    }
+    @Test
+    public void testGetChatResponseThrowsErrorIfRequestNotSuccessful(){
+        Mockito.when(restTemplate.postForEntity(Mockito.any(String.class), Mockito.any(HttpEntity.class), Mockito.any(Class.class)))
+                .thenReturn(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
         String userMessage = "This is a test message";
         Assertions.assertThrows(ResponseParsingError.class, () -> {
             openAiService.getResponse(userMessage);

@@ -67,6 +67,7 @@ class ConversationServiceTests {
         conversationHistory.setConversation(conversationId);
         conversationHistory.setInput(userInput);
         conversationHistory.setResponse(botResponse);
+        conversationHistory.getId().setCreatedAt(LocalDateTime.now());
 
         verify(conversationHistoryRepository, times(1)).save(any(ConversationHistory.class));
     }

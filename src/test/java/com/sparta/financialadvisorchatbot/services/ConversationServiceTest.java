@@ -48,6 +48,7 @@ public class ConversationServiceTest {
 
     private ConversationId conversationId;
     private List<ConversationHistory> conversationHistoryList;
+    private ArrayList<Faq> faqList;
 
     /** Methods to test
      ConversationHistory getLatestConversation()
@@ -77,6 +78,13 @@ public class ConversationServiceTest {
         conversationHistory2.setResponse("by opening a savings account");
         conversationHistoryList.add(conversationHistory1);
         conversationHistoryList.add(conversationHistory2);
+
+        Faq faq1 = new Faq();
+        Faq faq2 = new Faq();
+
+        faq1.setAnswer("This is a test answer");
+        faq2.setAnswer("This is another test answer");
+        faqList = new ArrayList<>(List.of(faq1, faq2));
     }
 
     @Test
@@ -90,8 +98,8 @@ public class ConversationServiceTest {
     void testStartConversationReturnsNewConversationId(){
         ConversationId conversationId = new ConversationId();
         when(conversationIdRepository.save(any(ConversationId.class))).thenReturn(conversationId);
-        ConversationId actual = conversationService.startConversation();
-        assertEquals(conversationId, actual);
+        Integer actual = conversationService.startConversation();
+        assertEquals(conversationId.getId(), actual);
     }
 
     @Test
@@ -110,13 +118,11 @@ public class ConversationServiceTest {
 
     }
     @Test
-    void testSaveConversationHistoryThrowsExceptionIfCannotFindByConversationId(){
-        String expected = "Conversation not found.";
+    void testSaveConversationHistoryDoesNotSaveConversationIfConversationIdNotFound(){
         when(conversationIdRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            conversationService.saveConversationHistory(1, "user input", "bot response");
-        });
-        assertEquals(expected, thrown.getMessage());
+        conversationService.saveConversationHistory(1, "user input", "bot response");
+        verify(conversationHistoryRepository, times(0)).save(any(ConversationHistory.class));
+
     }
 
     @Test
@@ -136,13 +142,30 @@ public class ConversationServiceTest {
         assertEquals(expected, thrown.getMessage());
     }
 
-//    @Test
-//    void testHandleUserInputReturnsFaqResponseIfFaqResponseExists(){
-//        when(faqService.getFAQs(any(String.class))).thenReturn(new ArrayList<>());
-//    }
+    @Test
+    void testHandleFaqReturnsFaqStringIfPresent(){
+        when(faqService.getFAQs(anyString())).thenReturn(faqList);
+        String userInput = "test input";
+        String expected = "This is a test answer";
+        String actual = conversationService.handleFaq(userInput);
+        assertEquals(expected, actual);
+    }
 
-//    @Test
-//    void testHandleUserInputReturnsGptResponseIfNoFaqResponseExists(){
-//
-//    }
+    @Test
+    void testHandleFaqReturnsNullIfNoFaqPresent(){
+        when(faqService.getFAQs(anyString())).thenReturn(new ArrayList<>());
+        String userInput = "test input";
+        String expected = null;
+        String actual = conversationService.handleFaq(userInput);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testGenerateGptResponseReturnsString(){
+        when(openAiService.getResponse(anyString())).thenReturn("Test response");
+        String userInput = "test input";
+        String expected = "Test response";
+        String actual = conversationService.generateGptResponse(userInput);
+        assertEquals(expected, actual);
+    }
 }

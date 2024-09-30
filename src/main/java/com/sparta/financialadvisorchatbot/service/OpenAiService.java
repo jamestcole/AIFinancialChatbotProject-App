@@ -30,7 +30,6 @@ public class OpenAiService {
     }
 
     public String getResponse(String userInput) {
-        String url = endpoint;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
@@ -46,7 +45,7 @@ public class OpenAiService {
 
         HttpEntity<OpenAiRequest> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<OpenAiResponse> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, OpenAiResponse.class);
+        ResponseEntity<OpenAiResponse> responseEntity = restTemplate.exchange(endpoint, HttpMethod.POST, requestEntity, OpenAiResponse.class);
 
         if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null) {
             List<OpenAiResponse.Choice> choices = responseEntity.getBody().getChoices();

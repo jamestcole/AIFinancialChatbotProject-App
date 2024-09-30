@@ -129,7 +129,7 @@ resource "aws_instance" "app_server" {
 
               # Start Apache server# Start the Spring Boot application
               java -jar target/AIFinancialChatbotProject-App.jar &
-              
+
               sudo systemctl start apache2
               sudo systemctl enable apache2
               EOF
@@ -152,7 +152,7 @@ resource "aws_instance" "db_server" {
   user_data = <<-EOF
               #!/bin/bash
               sudo apt update -y
-              sudo apt install -y mysql-server
+              sudo apt install -y mysql-server openjdk-21-jdk
 
               # Configure MySQL to allow external access
               sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf

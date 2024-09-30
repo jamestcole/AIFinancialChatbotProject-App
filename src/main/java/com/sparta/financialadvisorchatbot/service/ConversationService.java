@@ -18,15 +18,15 @@ public class ConversationService {
     private final ConversationIdRepository conversationIdRepository;
     private final ConversationHistoryRepository conversationHistoryRepository;
     private final FaqService faqService;
-    private final OpenAiSerivce openAiSerivce;
+    private final OpenAiService openAiService;
     private Integer currentConversationId;
 
     @Autowired
-    public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService, OpenAiSerivce openAiSerivce) {
+    public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService, OpenAiService openAiService) {
         this.conversationIdRepository = conversationIdRepository;
         this.conversationHistoryRepository = conversationHistoryRepository;
         this.faqService = faqService;
-        this.openAiSerivce = openAiSerivce;
+        this.openAiService = openAiService;
     }
 
     public Integer startConversation() {
@@ -77,6 +77,6 @@ public class ConversationService {
         return null;
     }
     public String generateGptResponse(String userInput) {
-        return openAiSerivce.getResponse(userInput);
+        return openAiService.getResponse(userInput);
     }
 }

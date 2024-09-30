@@ -8,6 +8,16 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
+import com.sparta.financialadvisorchatbot.entities.Faq;
+import com.sparta.financialadvisorchatbot.entities.Keyword;
+import com.sparta.financialadvisorchatbot.repositories.FaqRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 public class FaqService {
 

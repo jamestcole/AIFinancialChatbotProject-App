@@ -78,3 +78,37 @@ body {
     display: flex;
     flex-direction: column;
 }
+/* Search Bar Styling */
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-container input {
+    flex-grow: 1;
+    border-radius: 50px;
+    padding: 10px;
+    background-color: #333;
+    border: none;
+    color: white;
+    width: calc(100% - 120px);
+}
+
+.search-container input::placeholder {
+    color: #999;
+}
+
+.search-container button {
+    border-radius: 50px;
+    background-color: #ff0066;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #e6005c;
+}

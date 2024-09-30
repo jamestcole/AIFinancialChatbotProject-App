@@ -47,10 +47,10 @@ class ConversationServiceTests {
     void startConversation_ShouldReturnSavedConversationId() {
         when(conversationIdRepository.save(any(ConversationId.class))).thenReturn(conversationId);
 
-        ConversationId result = conversationService.startConversation();
+        Integer result = conversationService.startConversation();
 
         assertNotNull(result);
-        assertEquals(conversationId.getId(), result.getId());
+        assertEquals(conversationId.getId(), result);
         verify(conversationIdRepository, times(1)).save(any(ConversationId.class));
     }
 

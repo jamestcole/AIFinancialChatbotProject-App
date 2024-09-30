@@ -3,79 +3,59 @@ package com.sparta.financialadvisorchatbot.service;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
 import com.sparta.financialadvisorchatbot.entities.ConversationId;
-import com.sparta.financialadvisorchatbot.entities.Faq;
 import com.sparta.financialadvisorchatbot.repositories.ConversationHistoryRepository;
 import com.sparta.financialadvisorchatbot.repositories.ConversationIdRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class ConversationService {
 
-    private static final Logger log = LoggerFactory.getLogger(ConversationService.class);
     private final ConversationIdRepository conversationIdRepository;
     private final ConversationHistoryRepository conversationHistoryRepository;
     private final FaqService faqService;
-    private final OpenAiService openAiService;
-    // Singleton instance of the conversation
-    private ConversationId activeConversation;
-    //Track tier of conversation
-    private boolean waitingForClarification = false;
+    private final OpenAiSerivce openAiSerivce;
+    private Integer currentConversationId;
 
     @Autowired
-    public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService, OpenAiService openAiService) {
+    public ConversationService(ConversationIdRepository conversationIdRepository, ConversationHistoryRepository conversationHistoryRepository, FaqService faqService, OpenAiSerivce openAiSerivce) {
         this.conversationIdRepository = conversationIdRepository;
         this.conversationHistoryRepository = conversationHistoryRepository;
         this.faqService = faqService;
-        this.openAiService = openAiService;
+        this.openAiSerivce = openAiSerivce;
     }
 
-//    public ConversationId startConversation() {
-//        ConversationId conversation = new ConversationId();
-//        return conversationIdRepository.save(conversation);
+    public Integer startConversation() {
+        ConversationId conversationId = new ConversationId();
+        conversationIdRepository.save(conversationId);
+        currentConversationId = conversationId.getId();
+        return currentConversationId;
+    }
+
+//    public Integer getCurrentConversationId() {
+//        return currentConversationId;
 //    }
 
-    // Singleton method for creating or retrieving the active conversation
-    public synchronized ConversationId startConversation() {
-        // Check if there's already an active conversation
-        if (activeConversation == null) {
-            // Create and store the active conversation in the repository
-            activeConversation = new ConversationId();
-            activeConversation = conversationIdRepository.save(activeConversation);
-        }
-        return activeConversation; // Return the active conversation
-    }
-
-    // Optional: Method to end the current conversation and reset the singleton
-    public synchronized void endConversation() {
-        activeConversation = null; // Reset the active conversation
-    }
-
     public void saveConversationHistory(Integer conversationId, String userInput, String botResponse) {
-        ConversationId conversation = conversationIdRepository.findById(conversationId)
-                .orElseThrow(() -> new IllegalArgumentException("Conversation not found."));
-
-        ConversationHistoryId historyId = new ConversationHistoryId();
-        historyId.setConversationId(conversationId);
-        historyId.setCreatedAt(LocalDateTime.now());
-
         ConversationHistory conversationHistory = new ConversationHistory();
-        conversationHistory.setId(historyId);
-        conversationHistory.setConversation(conversation);
-        conversationHistory.setInput(userInput);
-        conversationHistory.setResponse(botResponse);
+        ConversationHistoryId conversationHistoryId = new ConversationHistoryId();
+        conversationHistoryId.setConversationId(conversationId);
+        conversationHistoryId.setCreatedAt(LocalDateTime.now());
 
-        conversationHistoryRepository.save(conversationHistory);
+        Optional<ConversationId> conversation = conversationIdRepository.findById(conversationId);
+        if (conversation.isPresent()) {
+            conversationHistory.setId(conversationHistoryId);
+            conversationHistory.setConversation(conversation.get());
+            conversationHistory.setInput(userInput);
+            conversationHistory.setResponse(botResponse);
+
+            conversationHistoryRepository.save(conversationHistory);
+        }
     }
-
 
     public List<ConversationHistory> getConversationHistory(Integer conversationId) {
         List<ConversationHistory> conversationHistory = conversationHistoryRepository.findByConversation_Id(conversationId);
@@ -89,49 +69,14 @@ public class ConversationService {
         return "Hello, I am Sparta Global's Financial Advisor Chatbot! How can I help you today?";
     }
 
-    public List<String> handleUserInput(Integer conversationId, String userInput) {
-
-        if (waitingForClarification) {
-            waitingForClarification = false;
-
-            String openAiResponse = openAiService.getChatResponse(userInput);
-            return List.of(openAiResponse);
+    public String handleFaq(String userInput) {
+        var faqs = faqService.getFAQs(userInput);
+        if (!faqs.isEmpty()) {
+            return faqs.getFirst().getAnswer();
         }
-
-
-        //check for faq match, I have found similiar questions related to yours, click one
-
-
-        // Check for FAQ match
-//        List<Faq> faqResponse = checkForFAQMatch(userInput);
-        if (!checkForFAQMatch(userInput)) {
-            List<String> response = new ArrayList<>();
-            List<Faq> faqs = faqService.getFAQs(userInput);
-                for(int i = 0; i < faqs.size(); i++) {
-                    response.add("Response: " + (i+1) + ": ");
-                    response.add(faqs.get(i).getAnswer());
-                }
-                return response;
-//            return sb.toString(); // Return the FAQ response
-//            return faqResponse.stream()
-//                    .map(Faq::getAnswer)
-//                    .collect(Collectors.toList());
-        } else {
-            // If no match, return a list with a single string prompting for more specifics
-            waitingForClarification = true;
-            return List.of("Could you please be a little more specific?");
-        }
+        return null;
     }
-
-    public List<String> splitResponse(String response) {
-        return Arrays.asList(response.split("\\n"));
+    public String generateGptResponse(String userInput) {
+        return openAiSerivce.getResponse(userInput);
     }
-
-
-
-
-    private boolean checkForFAQMatch(String userInput) {
-        return faqService.getFAQs(userInput).isEmpty();
-    }
-
 }

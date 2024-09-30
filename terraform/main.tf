@@ -112,7 +112,7 @@ resource "aws_instance" "app_server" {
   user_data = <<-EOF
               #!/bin/bash
               sudo apt update -y
-              sudo apt install -y openjdk-11-jdk maven apache2 git
+              sudo apt install -y openjdk-21-jdk maven apache2 git
 
               # Clone your GitHub repository
               git clone -b terra https://github.com/jamestcole/AIFinancialChatbotProject-App.git /var/www/html/app
@@ -129,7 +129,7 @@ resource "aws_instance" "app_server" {
               
               
               # Start Apache server# Start the Spring Boot application
-              java -jar target/AIFinancialChatbotProject-App.jar &
+              java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar &
 
               sudo systemctl start apache2
               sudo systemctl enable apache2

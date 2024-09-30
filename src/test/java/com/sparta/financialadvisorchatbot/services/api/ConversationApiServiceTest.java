@@ -3,6 +3,7 @@ package com.sparta.financialadvisorchatbot.services.api;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
 import com.sparta.financialadvisorchatbot.entities.ConversationId;
+import com.sparta.financialadvisorchatbot.exceptions.GenericBadRequestException;
 import com.sparta.financialadvisorchatbot.exceptions.GenericNotFoundError;
 import com.sparta.financialadvisorchatbot.repositories.ConversationHistoryRepository;
 import com.sparta.financialadvisorchatbot.repositories.ConversationIdRepository;
@@ -12,14 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.mock.web.MockPageContext;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,6 +59,7 @@ public class ConversationApiServiceTest {
     private ConversationId conversationId1;
     private ConversationId conversationId2;
 
+    private Pageable pageable;
 
     @BeforeEach
     void setUp() {
@@ -136,7 +132,7 @@ public class ConversationApiServiceTest {
         conversationHistory6.setId(conversationHistoryId6);
 
         entireConversation = new ArrayList<>(List.of(conversationHistory5,conversationHistory6));
-        Pageable pageable = PageRequest.of(0,10);
+        pageable = PageRequest.of(0,10, Sort.by("id").descending());
         allConversations = new PageImpl<>(Arrays.asList(conversationId1,conversationId2),pageable,2);
 
     }
@@ -181,17 +177,70 @@ public class ConversationApiServiceTest {
     }
     @Test
     void testGetAllConversationsReturnsAllConversations() {
-        when(conversationIdRepository.findAll(Pageable.ofSize(10))).thenReturn(allConversations);
-        Page pageTest = conversationApiService.getAllConversations(0,10);
+        when(conversationIdRepository.findAll(pageable)).thenReturn(allConversations);
+        Page<ConversationId> pageTest = conversationApiService.getAllConversations(0,10);
         assertEquals(conversationId1,pageTest.getContent().getFirst());
         assertEquals(2,pageTest.getContent().size());
     }
     @Test
     void testGetAllConversationsThrowsNotFoundExceptionIfNotFound(){
         String expected = "No conversations found!";
-        when(conversationIdRepository.findAll(Pageable.ofSize(10))).thenReturn(Page.empty());
+        when(conversationIdRepository.findAll(pageable)).thenReturn(Page.empty());
         GenericNotFoundError thrown = assertThrows(GenericNotFoundError.class, () -> {
             conversationApiService.getAllConversations(0,10);
+        });
+        assertEquals(expected, thrown.getMessage());
+    }
+    @Test
+    void testGetAllConversationsByDateRangeReturnsAllConversations(){
+        when(conversationIdRepository.findByConversationHistoriesIdCreatedAtBetween(any(Pageable.class), any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(allConversations);
+        Page<ConversationId> pageTest = conversationApiService.getAllConversationsByDateRange(0,10,LocalDate.of(2020,10,10), LocalDate.of(2020,10,12));
+        assertEquals(conversationId1,pageTest.getContent().getFirst());
+        assertEquals(2,pageTest.getContent().size());
+    }
+    @Test
+    void testGetAllConversationsByDateRangeThrowsNotFoundExceptionIfNotFound(){
+        String expected = "No conversations found!";
+        when(conversationIdRepository.findByConversationHistoriesIdCreatedAtBetween(any(Pageable.class), any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(Page.empty());
+        GenericNotFoundError thrown = assertThrows(GenericNotFoundError.class, () -> {
+            conversationApiService.getAllConversationsByDateRange(0,10,LocalDate.of(2020,10,10), LocalDate.of(2020,10,12));
+        });
+        assertEquals(expected, thrown.getMessage());
+    }
+    @Test
+    void testGetAllConversationsByDateRangeThrowsBadRequestExceptionIfFromDateAfterNow(){
+        String expected = "Invalid date range, please select valid dates.";
+        LocalDate fromDate = LocalDate.now().plusDays(1);
+        LocalDate toDate = LocalDate.now().plusDays(2);
+        GenericBadRequestException thrown = assertThrows(GenericBadRequestException.class, () -> {
+            conversationApiService.getAllConversationsByDateRange(0,10,fromDate, toDate);
+        });
+        assertEquals(expected, thrown.getMessage());
+    }
+    @Test
+    void testGetAllConversationsByDateRangeThrowsBadRequestExceptionIfToDateBeforeFromDate(){
+        String expected = "Invalid date range, please select valid dates.";
+        LocalDate fromDate = LocalDate.of(2023, 11, 11);
+        LocalDate toDate = LocalDate.of(2023, 11, 10);
+        GenericBadRequestException thrown = assertThrows(GenericBadRequestException.class, () -> {
+            conversationApiService.getAllConversationsByDateRange(0,10,fromDate, toDate);
+        });
+        assertEquals(expected, thrown.getMessage());
+    }
+    @Test
+    void testGetAllConversatiopnsContainingKeywordReturnsAllConversations(){
+        when(conversationIdRepository.findByConversationHistoriesInputContainsIgnoringCase(pageable,"money")).thenReturn(allConversations);
+        Page<ConversationId> pageTest = conversationApiService.getAllConversationsContainingKeyword("money",0,10);
+        assertEquals(conversationId1, pageTest.getContent().getFirst());
+        assertEquals(2, pageTest.getContent().size());
+
+    }
+    @Test
+    void testGetAllConversationsContainingKeywordThrowsNotFoundExceptionIfNotFound(){
+        String expected = "No conversations found containing keyword: test";
+        when(conversationIdRepository.findByConversationHistoriesInputContainsIgnoringCase(pageable,"test")).thenReturn(Page.empty());
+        GenericNotFoundError thrown = assertThrows(GenericNotFoundError.class, () -> {
+            conversationApiService.getAllConversationsContainingKeyword("test",0,10);
         });
         assertEquals(expected, thrown.getMessage());
     }

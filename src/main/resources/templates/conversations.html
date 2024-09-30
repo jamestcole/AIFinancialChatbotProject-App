@@ -12,24 +12,26 @@
 </div>
 <div class="container">
     <table class="highlight centered">
-        <thead>
-        <tr>
-            <th>Conversation ID</th>
-            <th>Date Created</th>
-            <th>Details</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Iterate through each conversation and display in table rows -->
-        <tr th:each="conversation : ${conversations}">
-            <td th:text="${conversation.getId()}">1</td>
-            <td th:text="${conversation.getConversationHistories[0].getId().getCreatedAt()}">2024-09-27T14:30:00</td>
-            <td>
-                <a th:href="@{'/admin/conversations/' + ${conversation.getId()}}" class="btn-sparta">View</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        <table class="highlight centered">
+            <thead>
+            <tr>
+                <th>Conversation ID</th>
+                <th>Date Created</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Iterate through each conversation and display in table rows if conversationHistories is not empty -->
+            <tr th:each="conversation : ${conversations}"
+                th:if="${not #lists.isEmpty(conversation.getConversationHistories())}">
+                <td th:text="${conversation.getId()}">1</td>
+                <td th:text="${conversation.getConversationHistories[0].getId().getCreatedAt()}">2024-09-27T14:30:00</td>
+                <td>
+                    <a th:href="@{'/admin/conversations/' + ${conversation.getId()}}" class="btn-sparta">View</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
     <!-- Pagination Controls -->
     <div class="row center-align">

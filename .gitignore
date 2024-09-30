@@ -183,3 +183,20 @@ out/
 
 # VS Code
 .vscode
+
+# Exclude Terraform plan files
+*.tfplan
+
+# Exclude local variables
+terraform.tfvars
+
+# Exclude any private key files
+*.pem
+*.key
+
+# Terraform directories
+terraform/.terraform/providers
+terraform/.terraform/
+terraform/.terraform
+*.tfstate
+*.tfstate.backup

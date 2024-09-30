@@ -1,0 +1,164 @@
+/* Style for the header */
+.header {
+    background-color: #211F20; /* Light black background */
+    color: white; /* White text */
+    text-align: center;
+    padding: 20px;
+    font-size: 32px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds shadow for depth */
+    letter-spacing: 2px; /* Adds a little spacing between letters */
+}
+/* Style for the main section background */
+.main-section {
+    background-color: #2D2A2B;
+    height: 100vh; /* Full height of the viewport */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 60px; /* To avoid overlapping the header */
+}
+
+/* Style for the central box */
+.central-box {
+    background-color: #211F20; /* 50% black opacity */
+    width: 70%; /* Same width as before */
+    padding: 10px;
+    color: white; /* White text */
+    text-align: center;
+    font-size: 24px;
+    border-radius: 10px; /* Optional: adds rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Adds depth with shadow */
+    position: absolute; /* Position it at the top */
+    top: 100px; /* Creates the gap below the header (adjust as needed) */
+    left: 15%; /* Centers the box horizontally */
+    right: 15%; /* Centers the box horizontally */
+    bottom: 0; /* Ensures it stretches to the bottom */
+    overflow-y: auto; /* Allows scrolling if content overflows */
+    z-index: 5; /* Ensures it's behind the header */
+}
+/* Chat section styling */
+.chat-section {
+    background-color: #2D2A2B; /* Light gray background */
+    height: 80%; /* Set a height */
+    padding: 20px;
+    color: black; /* Black text for chat */
+    overflow-y: auto; /* Enables scrolling for the chat */
+    border-radius: 8px;
+    margin-bottom: 10px; /* Small gap between chat and query section */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); /* Slight inner shadow */
+    display: flex;
+    flex-direction: column; /* Stack the messages vertically */
+    align-items: flex-start; /* Align chatbot messages to the left */
+}
+
+/* Query section styling */
+.query-section {
+    display: flex;
+    align-items: center;
+    height: 60px; /* Increase height slightly for better roundness */
+    background-color: #2D2A2B; /* Light background for the query section */
+    border-radius: 8px; /* Makes the query section rounded */
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+    margin-bottom: 10px;
+}
+
+/* Input field styling */
+input[type="text"] {
+    color: white;
+    width: 85%; /* Takes most of the space */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 18px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); /* Adds depth */
+}
+
+button {
+    width: 50px;
+    height: 50px;
+    background-color: #E33661; /* Original background color */
+    color: white;
+    border: none;
+    border-radius: 50%; /* Keep circular shape */
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center the text/icon inside */
+    outline: none; /* Prevents default blue outline */
+}
+
+button:focus {
+    outline: none; /* Remove focus outline */
+    background-color: #d63057; /* Optional: Change background on focus */
+}
+
+
+/* Send button hover effect */
+button:hover {
+    background-color: #b13b4f; /* Darker green on hover */
+}
+
+
+/* Optional body styling */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0; /* Light background */
+    font-family: Arial, sans-serif;
+}
+.footer {
+    background-color: #211F20; /* Black background */
+    color: white; /* Cream text color */
+    text-align: center; /* Center align text */
+    padding: 20px 0; /* Padding for top and bottom */
+    position: relative; /* Ensure proper positioning */
+    bottom: 0; /* Stay at the bottom */
+    width: 100%; /* Full width */
+}
+
+.message {
+    display: inline-block; /* Prevents stretching across the container */
+    margin: 5px 0; /* Space between messages */
+    border-radius: 20px; /* Rounded edges for the bubbles */
+    max-width: 50%; /* Maximum width for messages */
+    font-size: 14px; /* Smaller font size */
+    word-wrap: break-word; /* Ensures long words wrap within the bubble */
+}
+
+.chatbot {
+    background-color: #e9e9e9; /* Light gray for chatbot messages */
+    align-self: flex-start; /* Align to the left */
+    padding: 0px 15px; /* Smaller padding (more room left/right, less top/bottom) */
+    border-radius: 20px 20px 20px 0; /* Rounded corners, sharper on bottom-left */
+    font-size: 14px; /* Smaller font size */
+}
+
+.user {
+    background-color: #b13b4f; /* Pinkish-red for user messages */
+    color: white; /* White text for user messages */
+    align-self: flex-end; /* Align to the right */
+    padding: 0px 15px; /* Smaller padding (more room left/right, less top/bottom) */
+    border-radius: 20px 20px 0 20px; /* Rounded corners, sharper on bottom-right */
+    font-size: 14px; /* Smaller font size */
+}
+
+/* Optional: Use Flexbox for better layout */
+.chat-container {
+    display: flex;
+    flex-direction: column; /* Stack messages vertically */
+}
+
+
+.footer p {
+    margin: 0; /* Remove default margin */
+}
+
+.btn-sparta {
+    background-color: #E33661;
+    color: white;
+}

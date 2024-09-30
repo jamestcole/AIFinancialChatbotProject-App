@@ -3,7 +3,8 @@ package com.sparta.financialadvisorchatbot.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.financialadvisorchatbot.entities.Conversation;
+import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
+import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
 import com.sparta.financialadvisorchatbot.exceptions.ResponseParsingError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +36,7 @@ public class OpenAiService {
         this.restTemplate = restTemplate;
     }
 
-    public Conversation getChatResponse(String userInput){
+    public ConversationHistory getChatResponse(String userInput){
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -68,11 +69,11 @@ public class OpenAiService {
         throw new ResponseParsingError("ERR: Error while generating chat response"); // return response
     }
 
-    private static Conversation generateNewConversationModel(String userInput, JsonNode jsonNode) {
-        Conversation responseModel = new Conversation();
-        responseModel.setUserInput(userInput);
-        responseModel.setTimestamp(Instant.now());
-        responseModel.setBotResponse(jsonNode.path("choices").get(0).path("message").path("content").asText());
+    private static ConversationHistory generateNewConversationModel(String userInput, JsonNode jsonNode) {
+        ConversationHistory responseModel = new ConversationHistory();
+        responseModel.setInput(userInput);
+        responseModel.setId(new ConversationHistoryId());
+        responseModel.setResponse(jsonNode.path("choices").get(0).path("message").path("content").asText());
         return responseModel;
     }
 }

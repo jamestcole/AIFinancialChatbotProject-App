@@ -3,13 +3,9 @@ package com.sparta.financialadvisorchatbot.services;
 import com.sparta.financialadvisorchatbot.exceptions.ResponseParsingError;
 import com.sparta.financialadvisorchatbot.service.OpenAiService;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,7 +38,7 @@ public class OpenAiServiceTest {
                 .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
 
         String userMessage = "This is a test message";
-        String actual = openAiService.getChatResponse(userMessage,"You are a financial advisor");
+        String actual = openAiService.getResponse(userMessage);
         Assertions.assertEquals(expected,actual);
     }
     @Test
@@ -54,7 +50,7 @@ public class OpenAiServiceTest {
 
         String userMessage = "This is a test message";
         Assertions.assertThrows(ResponseParsingError.class, () -> {
-            openAiService.getChatResponse(userMessage,"You are a financial advisor");
+            openAiService.getResponse(userMessage);
         });
     }
 }

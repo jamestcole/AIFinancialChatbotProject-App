@@ -47,10 +47,10 @@ class ConversationServiceTests {
     void startConversation_ShouldReturnSavedConversationId() {
         when(conversationIdRepository.save(any(ConversationId.class))).thenReturn(conversationId);
 
-        ConversationId result = conversationService.startConversation();
+        Integer result = conversationService.startConversation();
 
         assertNotNull(result);
-        assertEquals(conversationId.getId(), result.getId());
+        assertEquals(conversationId.getId(), result);
         verify(conversationIdRepository, times(1)).save(any(ConversationId.class));
     }
 
@@ -67,7 +67,6 @@ class ConversationServiceTests {
         conversationHistory.setConversation(conversationId);
         conversationHistory.setInput(userInput);
         conversationHistory.setResponse(botResponse);
-        conversationHistory.setCreatedAt(LocalDateTime.now());
 
         verify(conversationHistoryRepository, times(1)).save(any(ConversationHistory.class));
     }
@@ -99,7 +98,7 @@ class ConversationServiceTests {
         conversationHistory.setResponse("Bot response");
         historyList.add(conversationHistory);
 
-        when(conversationHistoryRepository.findByConversation_ConversationId(1)).thenReturn(historyList);
+        when(conversationHistoryRepository.findByConversation_Id(1)).thenReturn(historyList);
 
         List<ConversationHistory> result = conversationService.getConversationHistory(1);
 
@@ -111,7 +110,7 @@ class ConversationServiceTests {
 
     @Test
     public void testGetConversationHistory_NotFound() {
-        when(conversationHistoryRepository.findByConversation_ConversationId(1)).thenReturn(new ArrayList<>());
+        when(conversationHistoryRepository.findByConversation_Id(1)).thenReturn(new ArrayList<>());
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             conversationService.getConversationHistory(1);

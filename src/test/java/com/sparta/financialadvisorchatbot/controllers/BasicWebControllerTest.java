@@ -19,7 +19,7 @@ public class BasicWebControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private BasicWebController basicWebController;
+    private com.sparta.financialadvisorchatbot.controllers.BasicWebController basicWebController;
 
     @BeforeEach
     public void setUp() {

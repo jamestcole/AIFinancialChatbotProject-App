@@ -121,12 +121,13 @@ resource "aws_instance" "app_server" {
               cd /var/www/html/app
 
               # Compile and run your Java project
-              ./mvnw clean install
+              #./mvnw clean install
+              sudo mvn clean install -DskipTests
 
               # Copy the built HTML files to the Apache web server
               cp -r /var/www/html/app/src/main/resources/templates/* /var/www/html/
               
-
+              
               # Start Apache server# Start the Spring Boot application
               java -jar target/AIFinancialChatbotProject-App.jar &
 

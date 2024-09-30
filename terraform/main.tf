@@ -127,6 +127,7 @@ resource "aws_instance" "app_server" {
               # Copy the built HTML files to the Apache web server
               sudo cp -r /var/www/html/app/src/main/resources/templates/* /var/www/html/
               
+              # wget http://your_application_url -O /path/to/application.jar
               
               # Start Apache server# Start the Spring Boot application
               java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar &
@@ -163,9 +164,9 @@ resource "aws_instance" "db_server" {
               sudo systemctl enable mysql
 
               # Set up MySQL database and user
-              mysql -u root -e "CREATE DATABASE your_database_name;"
-              mysql -u root -e "CREATE USER 'admin'@'%' IDENTIFIED BY 'your_password';"
-              mysql -u root -e "GRANT ALL PRIVILEGES ON your_database_name.* TO 'admin'@'%';"
+              mysql -u root -e "CREATE DATABASE question_bank_chatbot;"
+              mysql -u root -e "CREATE USER 'root'@'%' IDENTIFIED BY 'root';"
+              mysql -u root -e "GRANT ALL PRIVILEGES ON root.* TO 'root'@'%';"
               mysql -u root -e "FLUSH PRIVILEGES;"
               EOF
 

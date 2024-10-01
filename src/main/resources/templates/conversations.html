@@ -39,6 +39,12 @@
     </table>
 </div>
 
+<div class="row center-align">
+    <button th:if="${currentPage > 0}" th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} - 1) + '&size=10\''" class="btn-sparta">Previous</button>
+    <span th:text="'Page ' + (${currentPage} + 1)"></span>
+    <button th:if="${conversations.size() >= 10}" th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} + 1) + '&size=10\''" class="btn-sparta">Next</button>
+</div>
+
 
 <!--<footer class="footer">-->
 <!--    <p>&copy; <span th:text="${currentYear}">2024</span> Sparta Global. All rights reserved.</p>-->

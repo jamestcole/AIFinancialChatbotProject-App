@@ -1,5 +1,6 @@
 package com.sparta.financialadvisorchatbot.service;
 
+import com.sparta.financialadvisorchatbot.exceptions.ResponseParsingError;
 import com.sparta.financialadvisorchatbot.models.OpenAiRequest;
 import com.sparta.financialadvisorchatbot.models.OpenAiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +53,10 @@ public class OpenAiService {
             if (!choices.isEmpty()) {
                 return choices.get(0).getMessage().getContent();
             } else {
-                throw new RuntimeException("No choices found in response from OpenAI API.");
+                throw new ResponseParsingError("No choices found in response from OpenAI API.");
             }
         } else {
-            throw new RuntimeException("Failed to get response from OpenAI API: " + responseEntity.getStatusCode());
+            throw new ResponseParsingError("Failed to get response from OpenAI API: " + responseEntity.getStatusCode());
         }
     }
 }

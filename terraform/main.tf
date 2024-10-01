@@ -146,8 +146,8 @@ resource "aws_instance" "app_server" {
 
                   ProxyPass / http://localhost:8080/
                   ProxyPassReverse / http://localhost:8080/
-                  ErrorLog ${APACHE_LOG_DIR}/error.log
-                  CustomLog ${APACHE_LOG_DIR}/access.log combined
+                  ErrorLog $${APACHE_LOG_DIR}/error.log
+                  CustomLog $${APACHE_LOG_DIR}/access.log combined
 
               </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
 
@@ -180,7 +180,7 @@ resource "aws_instance" "db_server" {
 
               # Configure MySQL to allow external access
               sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
-              
+              sudo sed -i "s/^mysqlx-bind-address.*/mysqlx-bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
               
               # Start MySQL server
               sudo systemctl start mysql

@@ -11,10 +11,10 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10 col-sm-12 chat-container">
-            <h2 class="text-center">Finance ChatBot</h2>
+            <h2 class="text-center">Sparta Finance Chatbot</h2>
             <div class="chat-box" id="chatBox">
                 <div class="message-box bot-message mb-3">
-                    How can I help?
+                    Hi, I'm Sparta Finance Bot, how can I help you today?
                 </div>
                 <div class="message-container" th:each="message : ${conversationHistory}">
                     <div th:if="${message.input != null}" class="message-box user-message mb-3">

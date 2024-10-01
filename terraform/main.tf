@@ -162,7 +162,9 @@ resource "aws_instance" "app_server" {
     Name = "Java App Server"
   }
 }
-
+#resource "aws_secretsmanager_secret" "github_token" {
+#  name = "github_token"
+#}
 # EC2 Instance for the MySQL Database
 resource "aws_instance" "db_server" {
   ami           = var.ec2_ami_id
@@ -176,24 +178,34 @@ resource "aws_instance" "db_server" {
   user_data = <<-EOF
               #!/bin/bash
               sudo apt update -y
-              sudo apt install -y mysql-server openjdk-21-jdk git
+              sudo apt install -y mysql-server openjdk-21-jdk git #awscli jq
+
+              # Retrieve GitHub token from AWS Secrets Manager
+              # GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github_token --query SecretString --output text)
+
+              # git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/spartaproject2024/https://github.com/Yoonhee-Uni/AI_chatbot_project.git /
+              
+              # Run the Python script from the root directory
+              # sudo python3 /script.py
 
               # Configure MySQL to allow external access
               sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
               sudo sed -i "s/^mysqlx-bind-address.*/mysqlx-bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
-              
+
+
               # Start MySQL server
               sudo systemctl start mysql
               sudo systemctl enable mysql
 
               # Set up MySQL database and user
-              mysql -u root -e "CREATE DATABASE question_bank_chatbot;"
-              mysql -u root -e "CREATE USER 'root'@'%' IDENTIFIED BY 'root';"
-              mysql -u root -e "GRANT ALL PRIVILEGES ON root.* TO 'root'@'%';"
-              mysql -u root -e "FLUSH PRIVILEGES;"
-              mysql -u root -e "CREATE USER 'admin'@'%' IDENTIFIED BY 'admin';"
-              mysql -u root -e "GRANT ALL PRIVILEGES ON question_bank_chatbot TO 'admin'@'%';"
-              mysql -u root -e "FLUSH PRIVILEGES;"
+              # mysql -u root -e "CREATE DATABASE question_bank_chatbot;"
+              # mysql -u root -e "CREATE USER 'root'@'%' IDENTIFIED BY 'root';"
+              # mysql -u root -e "GRANT ALL PRIVILEGES ON question_bank_chatbot TO 'root'@'%';"
+              # mysql -u root -e "FLUSH PRIVILEGES;"
+
+              # mysql -u root -e "CREATE USER 'admin'@'%' IDENTIFIED BY 'admin';"
+              # mysql -u root -e "GRANT ALL PRIVILEGES ON question_bank_chatbot TO 'admin'@'%';"
+              # mysql -u root -e "FLUSH PRIVILEGES;"
               EOF
 
   tags = {

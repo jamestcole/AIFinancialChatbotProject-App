@@ -162,10 +162,12 @@ public class ConversationServiceTest {
 
     @Test
     void testGenerateGptResponseReturnsString(){
-        when(openAiService.getResponse(anyString())).thenReturn("Test response");
+        when(openAiService.getResponse(anyString(), anyList(), anyInt())).thenReturn("Test response");
         String userInput = "test input";
+        ArrayList<ConversationHistory> testHistory = new ArrayList<>();
+        int conversationId = 1;
         String expected = "Test response";
-        String actual = conversationService.generateGptResponse(userInput);
+        String actual = conversationService.generateGptResponse(userInput, testHistory, conversationId);
         assertEquals(expected, actual);
     }
 }

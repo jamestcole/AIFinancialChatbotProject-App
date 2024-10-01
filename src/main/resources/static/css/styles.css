@@ -15,7 +15,7 @@ body::before {
     left: -50%;
     right: -50%;
     bottom: -50%;
-    background-image: url('/images/spartaglobaldark.png');
+    background-image: url('/images/spartaglobaldarklogo.png');
     background-size: 300px 300px;
     background-repeat: repeat;
     opacity: 0.1;

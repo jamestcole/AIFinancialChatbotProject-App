@@ -25,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,6 +116,16 @@ public class OpenAiServiceTest {
         int conversationId = 1;
         Assertions.assertThrows(ResponseParsingError.class, () -> {
             openAiService.getResponse(userMessage, conversationHistory, conversationId);
+        });
+    }
+    @Test
+    public void testGetChatResponseThrowsErrorIfResponseBodyIsNull(){
+
+        Mockito.when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+                .thenReturn(new ResponseEntity<>(null , HttpStatus.OK));
+        String userMessage = "This is a test message";
+        Assertions.assertThrows(ResponseParsingError.class, () -> {
+            openAiService.getResponse(userMessage);
         });
     }
 }

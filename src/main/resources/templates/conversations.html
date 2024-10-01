@@ -12,9 +12,9 @@
 </div>
 
 <div class="container">
-    <form th:action="@{history/conversations/containing}" method="get" class="search-container mt-4">
+    <form th:action="@{history}" method="get" class="search-container mt-4">
         <input type="text" id="searchInput" name="keyword" placeholder="Search conversations..." required class="search-input">
-        <button type="submit" class="search-button" >
+        <button type="submit" class="search-button mt-4" >
             <i class="bi bi-search"></i> Search
         </button>
     </form>
@@ -32,17 +32,19 @@
         <tbody>
         <tr th:each="conversation : ${conversations}" th:if="${not #lists.isEmpty(conversation.getConversationHistories())}">
             <td th:text="${conversation.getId()}">1</td>
-            <td th:text="${conversation.getConversationHistories[0].getId().getCreatedAt()}">2024-09-27T14:30:00</td>
+            <td th:text="${conversation.getConversationHistories[0].getId().getCreatedAt().toString().replace('T', ' ')}">2024-09-27T14:30:00</td>
             <td><a th:href="@{'/admin/conversations/' + ${conversation.getId()}}" class="btn-sparta">View</a></td>
         </tr>
         </tbody>
     </table>
 </div>
 
-<div class="row center-align">
+<div class="row center-align mt-3">
     <button th:if="${currentPage > 0}" th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} - 1) + '&size=10\''" class="btn-sparta">Previous</button>
-    <span th:text="'Page ' + (${currentPage} + 1)"></span>
     <button th:if="${conversations.size() >= 10}" th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} + 1) + '&size=10\''" class="btn-sparta">Next</button>
+</div>
+<div class="row center-align">
+    <span th:text="'Page ' + (${currentPage} + 1)"></span>
 </div>
 
 

@@ -88,16 +88,16 @@ tbody tr:nth-child(even) {
 
 .search-container input {
     flex-grow: 1 !important;
-    border-radius: 50px !important;
-    padding: 10px 20px !important; /* Add extra padding for a bubble effect */
+    border-radius: 25px !important;
+    padding: 12px 20px !important; /* Add extra padding for a bubble effect */
     background-color: #f0f0f0 !important; /* Light gray background for the bubble look */
     border: none !important;
     color: #333 !important; /* Darker text color for better readability */
-    width: calc(100% - 120px) !important; /* Adjust width based on the container */
+    width: calc(100% - 150px) !important; /* Adjust width based on the container */
     margin-right: 10px !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for a raised effect */
     font-size: 16px !important;
-    height: 19px !important; /* Set height to match button height */
+    height: 20px !important; /* Set height to match button height */
     line-height: 20px !important; /* Adjust line-height to vertically center the text */
 }
 
@@ -106,19 +106,20 @@ tbody tr:nth-child(even) {
 }
 
 .search-container button {
-    border-radius: 50px !important;
+    border-radius: 25px !important;
     background-color: #ff0066 !important;
     border: none !important;
     color: white !important;
-    padding: 10px 20px !important; /* Keep padding consistent */
+    padding: 12px 20px !important; /* Keep padding consistent */
     margin-left: 10px !important;
+    margin-bottom: 7px;
     cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     font-size: 16px !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important; /* Same shadow effect for consistency */
-    height: 40px !important; /* Set height to ensure consistency */
+    height: 47px !important; /* Set height to ensure consistency */
 }
 
 .search-container button:hover {

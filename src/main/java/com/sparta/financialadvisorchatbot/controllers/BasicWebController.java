@@ -1,6 +1,7 @@
 package com.sparta.financialadvisorchatbot.controllers;
 
 import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
+import com.sparta.financialadvisorchatbot.service.ConversationFormatter;
 import com.sparta.financialadvisorchatbot.service.ConversationService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +10,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/chat")
 public class BasicWebController {
 
     private final ConversationService conversationService;
+    private final ConversationFormatter conversationFormatter;
 
     @Autowired
-    public BasicWebController(ConversationService conversationService) {
+    public BasicWebController(ConversationService conversationService, ConversationFormatter conversationFormatter) {
         this.conversationService = conversationService;
+        this.conversationFormatter = conversationFormatter;
     }
 
     @GetMapping
@@ -44,12 +48,18 @@ public class BasicWebController {
             session.setAttribute("currentConversationId", conversationId);
         }
 
+        List<ConversationHistory> conversationHistoryList = List.of();
+        Optional<List<ConversationHistory>> conversationHistoryOptional = Optional.ofNullable(conversationService.getConversationHistory(conversationId));
+        if (conversationHistoryOptional.isPresent()) {
+            conversationHistoryList = conversationHistoryOptional.get();
+        }
+
         String faqResponse = conversationService.handleFaq(userInput);
         if (faqResponse != null) {
             botResponse = faqResponse;
         } else {
             try {
-                botResponse = conversationService.generateGptResponse(userInput);
+                botResponse = conversationService.generateGptResponse(userInput, conversationHistoryList, conversationId);
             } catch (Exception e) {
                 botResponse = "Please keep your questions related to financial advice.";
             }

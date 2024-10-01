@@ -12,14 +12,21 @@
 </div>
 
 <div class="container">
+
     <form th:action="@{history}" method="get" class="search-container mt-4">
         <input type="text" id="searchInput" name="keyword" placeholder="Search conversations..." required class="search-input">
+        <input type="hidden" name="page" th:value="0" />
+        <input type="hidden" name="size" value="10" />
         <button type="submit" class="search-button mt-4" >
             <i class="bi bi-search"></i> Search
         </button>
     </form>
 
-
+<div th:if="${isSearch == true}" class="row center-align mt-5">
+    <div>
+        <b>Search query:</b> '<span th:text="${keyword}"></span>'
+    </div>
+</div>
     <!-- Conversation History Table -->
 
     <table th:if="${not conversations.isEmpty()}" class="table table-dark table-hover text-center">
@@ -38,18 +45,23 @@
         </tr>
         </tbody>
     </table>
-    <div class="header" th:if="${conversations.isEmpty()}">
-        <div class="text-center display-4">
-            No conversations with user input of '<span th:text="${error}"></span>' found.
+
+    <div th:if="${conversations.isEmpty()}" class="center-align-container">
+        <div class="card-custom text-center">
+            <h4 class="card-title">No Conversations Found</h4>
+            <p class="card-text">
+                No conversations with user input of '<span th:text="${error}"></span>' found.
+            </p>
+            <form th:action="@{history}" method="get">
+                <button type="submit" class="btn-sparta">
+                    Back
+                </button>
+            </form>
         </div>
-        <form th:action="@{history}" method="get" class="container ma-4">
-            <button type="submit" class="btn-sparta">
-                 Back
-            </button>
-        </form>
     </div>
-    <div th:if="${isSearch==true}" class="text-center display-4">
-        <form th:action="@{history}" method="get" class="container ma-4">
+
+    <div th:if="${isSearch == true}" class="row center-align mt-5">
+        <form th:action="@{history}" method="get" class="mt-4">
             <button type="submit" class="btn-sparta">
                 Back to all conversations
             </button>
@@ -58,8 +70,22 @@
 </div>
 
 <div class="row center-align mt-3">
-    <button th:if="${currentPage > 0}" th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} - 1) + '&size=10\''" class="btn-sparta">Previous</button>
-    <button th:if="${conversations.size() >= 10}" th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} + 1) + '&size=10\''" class="btn-sparta">Next</button>
+    <span th:if="${isSearch == true}">
+        <button th:if="${currentPage > 0}"
+                th:attr="onclick=|location.href='/admin/history?keyword=' + '${keyword}' + '&page=' + (${currentPage} - 1) + '&size=10'|"
+                class="btn-sparta">Previous</button>
+        <button th:if="${conversations.size() >= 5}"
+                th:attr="onclick=|location.href='/admin/history?keyword=' + '${keyword}' + '&page=' + (${currentPage} + 1) + '&size=10'|"
+                class="btn-sparta">Next</button>
+    </span>
+    <span th:if="${isSearch == false}">
+        <button th:if="${currentPage > 0}"
+                th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} - 1) + '&size=10\''"
+                class="btn-sparta">Previous</button>
+        <button th:if="${conversations.size() >= 10}"
+                th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} + 1) + '&size=10\''"
+                class="btn-sparta">Next</button>
+    </span>
 </div>
 <div class="row center-align">
     <span th:text="'Page ' + (${currentPage} + 1)"></span>

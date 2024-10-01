@@ -129,3 +129,28 @@ tbody tr:nth-child(even) {
 .search-container button i {
     margin-right: 5px !important;
 }
+
+.card-custom {
+    background-color: #2b2b2b; /* Match background color */
+    color: white;
+    border: 1px solid #444; /* Border color similar to table headers */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow for elevated effect */
+    padding: 20px; /* Padding inside the card */
+    max-width: 600px; /* Width of the card */
+    margin: 0 auto; /* Center horizontally */
+}
+
+.card-custom .btn-sparta {
+    margin-top: 20px; /* Spacing above the button */
+    display: block; /* Center the button */
+    width: 100px; /* Consistent button width */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-align-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

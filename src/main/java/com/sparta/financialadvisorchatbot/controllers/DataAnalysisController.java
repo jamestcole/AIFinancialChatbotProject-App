@@ -70,6 +70,7 @@ public class DataAnalysisController {
 
         model.addAttribute("conversations", allConversations.getBody());
         model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
         model.addAttribute("currentYear", java.time.Year.now().getValue());
         model.addAttribute("isSearch", isSearch);
         return "conversations";

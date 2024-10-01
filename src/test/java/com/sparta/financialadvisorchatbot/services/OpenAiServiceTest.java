@@ -1,6 +1,7 @@
 package com.sparta.financialadvisorchatbot.services;
 
 import com.sparta.financialadvisorchatbot.FinancialAdvisorChatbotApplication;
+import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.exceptions.ResponseParsingError;
 import com.sparta.financialadvisorchatbot.models.OpenAiResponse;
 import com.sparta.financialadvisorchatbot.service.OpenAiService;
@@ -8,14 +9,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
@@ -24,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -74,7 +70,9 @@ public class OpenAiServiceTest {
                 .thenReturn(new ResponseEntity<>(openAiResponse, HttpStatus.OK));
 
         String userMessage = "This is a test message";
-        String actual = openAiService.getResponse(userMessage);
+        ArrayList<ConversationHistory> conversationHistory = new ArrayList<>();
+        int conversationId = 1;
+        String actual = openAiService.getResponse(userMessage, conversationHistory, conversationId);
         Assertions.assertEquals(expected,actual);
     }
     @Test
@@ -85,8 +83,10 @@ public class OpenAiServiceTest {
                 .thenReturn(new ResponseEntity<>(openAiResponse2, HttpStatus.OK));
 
         String userMessage = "This is a test message";
+        ArrayList<ConversationHistory> conversationHistory = new ArrayList<>();
+        int conversationId = 1;
         Assertions.assertThrows(ResponseParsingError.class, () -> {
-            openAiService.getResponse(userMessage);
+            openAiService.getResponse(userMessage, conversationHistory, conversationId);
         });
     }
     @Test
@@ -95,8 +95,10 @@ public class OpenAiServiceTest {
         Mockito.when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenReturn(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
         String userMessage = "This is a test message";
+        ArrayList<ConversationHistory> conversationHistory = new ArrayList<>();
+        int conversationId = 1;
         Assertions.assertThrows(ResponseParsingError.class, () -> {
-            openAiService.getResponse(userMessage);
+            openAiService.getResponse(userMessage, conversationHistory, conversationId);
         });
     }
     @Test
@@ -105,8 +107,10 @@ public class OpenAiServiceTest {
         Mockito.when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenReturn(new ResponseEntity<>(null , HttpStatus.OK));
         String userMessage = "This is a test message";
+        ArrayList<ConversationHistory> conversationHistory = new ArrayList<>();
+        int conversationId = 1;
         Assertions.assertThrows(ResponseParsingError.class, () -> {
-            openAiService.getResponse(userMessage);
+            openAiService.getResponse(userMessage, conversationHistory, conversationId);
         });
     }
 }

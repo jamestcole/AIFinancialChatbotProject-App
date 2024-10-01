@@ -183,7 +183,7 @@ resource "aws_instance" "db_server" {
               # Retrieve GitHub token from AWS Secrets Manager
               # GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github_token --query SecretString --output text)
 
-              # git clone https://${GITHUB_TOKEN}:x-oauth-basic@github.com/spartaproject2024/https://github.com/Yoonhee-Uni/AI_chatbot_project.git /
+              # git clone https://$${GITHUB_TOKEN}:x-oauth-basic@github.com/spartaproject2024/https://github.com/Yoonhee-Uni/AI_chatbot_project.git /
               
               # Run the Python script from the root directory
               # sudo python3 /script.py

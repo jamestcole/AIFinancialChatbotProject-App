@@ -128,7 +128,29 @@ resource "aws_instance" "app_server" {
               sudo cp -r /var/www/html/app/src/main/resources/templates/* /var/www/html/
               
               # wget http://your_application_url -O /path/to/application.jar
-              
+              sudo a2enmod proxy
+              sudo a2enmod proxy_http
+
+              # Replace the default Apache configuration with your virtual host settings
+              echo "<VirtualHost *:80>
+                  ServerAdmin webmaster@localhost
+                  DocumentRoot /var/www/html
+
+                  ProxyRequests Off
+                  ProxyPreserveHost On
+
+                  <Proxy *>
+                      Order allow,deny
+                      Allow from all
+                  </Proxy>
+
+                  ProxyPass / http://localhost:8080/
+                  ProxyPassReverse / http://localhost:8080/
+                  ErrorLog ${APACHE_LOG_DIR}/error.log
+                  CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+              </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
+
               # Start Apache server# Start the Spring Boot application
               java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar &
 
@@ -154,11 +176,12 @@ resource "aws_instance" "db_server" {
   user_data = <<-EOF
               #!/bin/bash
               sudo apt update -y
-              sudo apt install -y mysql-server openjdk-21-jdk
+              sudo apt install -y mysql-server openjdk-21-jdk git
 
               # Configure MySQL to allow external access
               sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
-
+              
+              
               # Start MySQL server
               sudo systemctl start mysql
               sudo systemctl enable mysql
@@ -167,6 +190,9 @@ resource "aws_instance" "db_server" {
               mysql -u root -e "CREATE DATABASE question_bank_chatbot;"
               mysql -u root -e "CREATE USER 'root'@'%' IDENTIFIED BY 'root';"
               mysql -u root -e "GRANT ALL PRIVILEGES ON root.* TO 'root'@'%';"
+              mysql -u root -e "FLUSH PRIVILEGES;"
+              mysql -u root -e "CREATE USER 'admin'@'%' IDENTIFIED BY 'admin';"
+              mysql -u root -e "GRANT ALL PRIVILEGES ON question_bank_chatbot TO 'admin'@'%';"
               mysql -u root -e "FLUSH PRIVILEGES;"
               EOF
 

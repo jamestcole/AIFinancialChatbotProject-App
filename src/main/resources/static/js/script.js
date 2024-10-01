@@ -92,3 +92,7 @@ function extractBotResponse(html) {
     const messages = doc.querySelectorAll('.bot-message');
     return messages[messages.length - 1].textContent;
 }
+function setFormAction() {
+    const form = document.getElementById('searchForm');
+    form.setAttribute('action', '/admin/history/conversations/containing');
+}

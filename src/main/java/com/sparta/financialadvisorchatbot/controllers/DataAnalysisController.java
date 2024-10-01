@@ -44,6 +44,21 @@ public class DataAnalysisController {
         model.addAttribute("currentYear", java.time.Year.now().getValue());
         return "conversations";
     }
+    @GetMapping("history/conversations/containing")
+    public String getSearchedConversations(@RequestParam String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model){
+        ResponseEntity<List<ConversationId>> allConversations =
+                webClient
+                        .get()
+                        .uri("/api/sg-financial-chatbot/v1.0//conversations/containing?keyword=" +keyword+ "&page="+ page + "&size=" + size)
+                        .retrieve()
+                        .toEntityList(ConversationId.class)
+                        .block();
+
+        model.addAttribute("conversations", allConversations.getBody());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("currentYear", java.time.Year.now().getValue());
+        return "conversations";
+    }
 
     @GetMapping("/conversations/{id}")
     public String getConversationDetails(@PathVariable("id") int id, Model model){

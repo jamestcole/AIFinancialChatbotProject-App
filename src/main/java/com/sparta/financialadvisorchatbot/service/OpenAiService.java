@@ -1,6 +1,7 @@
 package com.sparta.financialadvisorchatbot.service;
 
 import com.sparta.financialadvisorchatbot.exceptions.ResponseParsingError;
+import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
 import com.sparta.financialadvisorchatbot.models.OpenAiRequest;
 import com.sparta.financialadvisorchatbot.models.OpenAiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.List;
 @Service
 public class OpenAiService {
     private final RestTemplate restTemplate;
+    private final ConversationFormatter conversationFormatter;
 
     @Value("${openai.api.key}")
     private String apiKey;
@@ -26,21 +28,24 @@ public class OpenAiService {
     private String prompt;
 
     @Autowired
-    public OpenAiService(RestTemplate restTemplate) {
+    public OpenAiService(RestTemplate restTemplate, ConversationFormatter conversationFormatter) {
         this.restTemplate = restTemplate;
+        this.conversationFormatter = conversationFormatter;
     }
 
-    public String getResponse(String userInput) {
+    public String getResponse(String userInput, List<ConversationHistory> messageHistory, Integer conversationId) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         headers.set("api-key", apiKey);
 
-        OpenAiRequest body = new OpenAiRequest();
+        String input = conversationFormatter.formatConversation(messageHistory) + "\nUser: " + userInput;
 
+        OpenAiRequest body = new OpenAiRequest();
+        //todo: send the conversation history with the prompt
         List<OpenAiRequest.Message> messages = new ArrayList<>();
         messages.add(new OpenAiRequest.Message("system", prompt));
-        messages.add(new OpenAiRequest.Message("user", userInput));
+        messages.add(new OpenAiRequest.Message("user", input));
 
         body.setMessages(messages);
 

@@ -59,9 +59,9 @@ public class ConversationService {
 
     public List<ConversationHistory> getConversationHistory(Integer conversationId) {
         List<ConversationHistory> conversationHistory = conversationHistoryRepository.findByConversation_Id(conversationId);
-        if (conversationHistory.isEmpty()) {
-            throw new IllegalArgumentException("No conversation history found for this ID.");
-        }
+//        if (conversationHistory.isEmpty()) {
+//            throw new IllegalArgumentException("No conversation history found for this ID.");
+//        }
         return conversationHistory;
     }
 
@@ -76,7 +76,7 @@ public class ConversationService {
         }
         return null;
     }
-    public String generateGptResponse(String userInput) {
-        return openAiService.getResponse(userInput);
+    public String generateGptResponse(String userInput, List<ConversationHistory> messageHistory, Integer currentConversationId) {
+        return openAiService.getResponse(userInput, messageHistory, currentConversationId);
     }
 }

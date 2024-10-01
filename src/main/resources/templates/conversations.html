@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="header">
-    Financial Chatbot Central
+    Sparta Finance Chatbot Admin
 </div>
 
 <div class="container">
@@ -21,7 +21,8 @@
 
 
     <!-- Conversation History Table -->
-    <table class="table table-dark table-hover text-center">
+
+    <table th:if="${not conversations.isEmpty()}" class="table table-dark table-hover text-center">
         <thead>
         <tr>
             <th>Conversation ID</th>
@@ -37,6 +38,23 @@
         </tr>
         </tbody>
     </table>
+    <div class="header" th:if="${conversations.isEmpty()}">
+        <div class="text-center display-4">
+            No conversations with user input of '<span th:text="${error}"></span>' found.
+        </div>
+        <form th:action="@{history}" method="get" class="container ma-4">
+            <button type="submit" class="btn-sparta">
+                 Back
+            </button>
+        </form>
+    </div>
+    <div th:if="${isSearch==true}" class="text-center display-4">
+        <form th:action="@{history}" method="get" class="container ma-4">
+            <button type="submit" class="btn-sparta">
+                Back to all conversations
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="row center-align mt-3">
@@ -46,7 +64,6 @@
 <div class="row center-align">
     <span th:text="'Page ' + (${currentPage} + 1)"></span>
 </div>
-
 
 <!--<footer class="footer">-->
 <!--    <p>&copy; <span th:text="${currentYear}">2024</span> Sparta Global. All rights reserved.</p>-->

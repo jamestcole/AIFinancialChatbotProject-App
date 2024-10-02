@@ -115,11 +115,13 @@ resource "aws_instance" "app_server" {
               sudo apt install -y openjdk-21-jdk maven apache2 git
 
               # Clone your GitHub repository
-              git clone -b terra https://github.com/jamestcole/AIFinancialChatbotProject-App.git /var/www/html/app
+              git clone -b main https://github.com/jamestcole/AIFinancialChatbotProject-App.git /var/www/html/app
 
               # Navigate to the project directory and build the Java project
               cd /var/www/html/app
-              pip install mysql-connector
+
+              sudo apt install -y python3 python3-pip
+              pip3 install mysql-connector
 
               # Compile and run your Java project
               #./mvnw clean install

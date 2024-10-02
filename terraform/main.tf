@@ -115,7 +115,7 @@ resource "aws_instance" "app_server" {
               sudo apt install -y openjdk-21-jdk maven apache2 git
 
               # Clone your GitHub repository
-              git clone -b main https://github.com/jamestcole/AIFinancialChatbotProject-App.git /var/www/html/app
+              git clone -b dev https://github.com/jamestcole/AIFinancialChatbotProject-App.git /var/www/html/app
 
               # Navigate to the project directory and build the Java project
               cd /var/www/html/app

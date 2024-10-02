@@ -94,7 +94,7 @@ tbody tr:nth-child(even) {
     padding: 12px 20px !important; /* Add extra padding for a bubble effect */
     background-color: #2b2b2b !important; /* Light gray background for the bubble look */
     border: none !important;
-    color: #333 !important; /* Darker text color for better readability */
+    color: white !important; /* Darker text color for better readability */
     width: calc(100% - 150px) !important; /* Adjust width based on the container */
     margin-right: 10px !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for a raised effect */
@@ -157,3 +157,4 @@ tbody tr:nth-child(even) {
     justify-content: center;
     align-items: center;
 }
+

@@ -13,7 +13,7 @@
 
 <div class="container">
 
-    <form th:action="@{history}" method="get" class="search-container mt-4">
+    <form th:action="@{history}" method="get" class="search-container">
         <input type="text" id="searchInput" name="keyword" placeholder="Search conversations..." required class="search-input">
         <input type="hidden" name="page" th:value="0" />
         <input type="hidden" name="size" value="10" />
@@ -74,7 +74,7 @@
         <button th:if="${currentPage > 0}"
                 th:attr="onclick=|location.href='/admin/history?keyword=' + '${keyword}' + '&page=' + (${currentPage} - 1) + '&size=10'|"
                 class="btn-sparta">Previous</button>
-        <button th:if="${conversations.size() >= 5}"
+        <button th:if="${conversations.size() >= 10}"
                 th:attr="onclick=|location.href='/admin/history?keyword=' + '${keyword}' + '&page=' + (${currentPage} + 1) + '&size=10'|"
                 class="btn-sparta">Next</button>
     </span>

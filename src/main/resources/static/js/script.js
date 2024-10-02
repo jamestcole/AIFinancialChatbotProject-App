@@ -49,8 +49,8 @@ chatBox.addEventListener('mousedown', enableUserScroll);
 // chatBox.addEventListener('mouseleave', disableUserScroll);
 
 document.querySelector('form').onsubmit = async function(event) {
-    userScrolling = false;
     scrollToBottom();
+    userScrolling = false;
     event.preventDefault();
     const userInput = userInputField.value;
 

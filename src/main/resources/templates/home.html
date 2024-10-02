@@ -21,6 +21,13 @@
                         <span th:text="${message.input}"></span>
                     </div>
                     <div th:if="${message.response != null}" class="message-box bot-message mb-3">
+                        <div th:if="${faqQuestion != null and faqQuestionSource != null}">
+                            <span>
+                                We found a similar question on our FAQ:
+                                <a th:href="${faqQuestionSource}" target="_blank" th:utext="${faqQuestion}"></a>
+                            </span>
+                        </div>
+                        <br />
                         <span th:text="${message.response}"></span>
                     </div>
                 </div>

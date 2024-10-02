@@ -1,8 +1,6 @@
 package com.sparta.financialadvisorchatbot.service;
 
-import com.sparta.financialadvisorchatbot.entities.ConversationHistory;
-import com.sparta.financialadvisorchatbot.entities.ConversationHistoryId;
-import com.sparta.financialadvisorchatbot.entities.ConversationId;
+import com.sparta.financialadvisorchatbot.entities.*;
 import com.sparta.financialadvisorchatbot.repositories.ConversationHistoryRepository;
 import com.sparta.financialadvisorchatbot.repositories.ConversationIdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -70,12 +69,20 @@ public class ConversationService {
     }
 
     public String handleFaq(String userInput) {
-        var faqs = faqService.getFAQs(userInput);
-        if (!faqs.isEmpty()) {
-            return faqs.getFirst().getAnswer();
-        }
-        return null;
+        Optional<Faq> faqOptional = Optional.ofNullable(faqService.getMostRelevantFaq(userInput));
+        return faqOptional.map(Faq::getAnswer).orElse(null);
     }
+
+    public String getQuestion(String userInput) {
+        Optional<Faq> faqOptional = Optional.ofNullable(faqService.getMostRelevantFaq(userInput));
+        return faqOptional.map(Faq::getQuestion).orElse(null);
+    }
+
+    public String getSourceUrl(String userInput) {
+        Optional<Faq> faqOptional = Optional.ofNullable(faqService.getMostRelevantFaq(userInput));
+        return faqOptional.map(faq -> Objects.requireNonNull(faq.getSources().stream().reduce((a, b) -> a).orElse(null)).getSourceLink()).orElse(null);
+    }
+
     public String generateGptResponse(String userInput, List<ConversationHistory> messageHistory, Integer currentConversationId) {
         return openAiService.getResponse(userInput, messageHistory, currentConversationId);
     }

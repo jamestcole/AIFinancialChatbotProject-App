@@ -42,7 +42,8 @@
             <td th:text="${conversation.getId()}">1</td>
             <td th:if="${not #lists.isEmpty(conversation.getConversationHistories())}" th:text="${conversation.getConversationHistories[0].getId().getCreatedAt().toString().replace('T', ' ')}">2024-09-27T14:30:00</td>
             <td th:if="${#lists.isEmpty(conversation.getConversationHistories())}">No Content</td>
-            <td><a th:href="@{'/admin/conversations/' + ${conversation.getId()}}" class="btn-sparta">View</a></td>
+            <td th:if="${not #lists.isEmpty(conversation.getConversationHistories())}"><a th:href="@{'/admin/conversations/' + ${conversation.getId()}}" class="btn-sparta">View</a></td>
+            <td th:if="${#lists.isEmpty(conversation.getConversationHistories())}">No Content</td>
         </tr>
         </tbody>
     </table>

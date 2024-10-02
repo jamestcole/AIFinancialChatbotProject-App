@@ -3,43 +3,72 @@ package com.sparta.financialadvisorchatbot.service;
 import com.sparta.financialadvisorchatbot.entities.Faq;
 import com.sparta.financialadvisorchatbot.entities.Keyword;
 import com.sparta.financialadvisorchatbot.repositories.FaqRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class FaqService {
 
-    private final FaqRepository questionRepository;
-    public FaqService(FaqRepository questionRepository) {
-        this.questionRepository = questionRepository;
+
+    private final FaqRepository faqRepository;
+
+    @Autowired
+    public FaqService(FaqRepository faqRepository) {
+        this.faqRepository = faqRepository;
     }
 
-    public ArrayList<Faq> getFAQs(String input) {
-        ArrayList<Faq> questions = new ArrayList<>(questionRepository.findAll());
+    private static final int KEYWORD_MATCH_THRESHOLD = 2;
 
-        Map<Faq, Integer> topHits = new HashMap<>();
+    public Faq getMostRelevantFaq(String userInput) {
+        String normalizedInput = normalizeText(userInput);
 
-        for(Faq faq : questions){
+        List<Faq> faqs = faqRepository.findAll();
+        Faq bestMatch = null;
+        int maxKeywordMatches = 0;
+
+        for (Faq faq : faqs) {
+            String normalizedFaqQuestion = normalizeText(faq.getQuestion());
+            if (isCloseMatch(normalizedInput, normalizedFaqQuestion)) {
+                return faq;
+            }
+
             Set<Keyword> keywords = faq.getKeywords();
-            for (Keyword keyword : keywords) {
-                if (input.toLowerCase().contains(keyword.getKeyword().toLowerCase())) {
-                    if(topHits.containsKey(faq)){
-                        topHits.put(faq, topHits.get(faq) + 1);
-                    }
-                    else topHits.put(faq, 1);
-                }
+            int keywordMatches = countMatchingKeywords(keywords, normalizedInput);
+
+            if (keywordMatches > maxKeywordMatches) {
+                bestMatch = faq;
+                maxKeywordMatches = keywordMatches;
             }
         }
 
-        return topHits
-                .entrySet()
-                .stream()
-                .sorted((entry1, entry2)-> entry2.getValue().compareTo(entry1.getValue()))
-                .limit(3)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toCollection(ArrayList::new));
+        if (maxKeywordMatches < KEYWORD_MATCH_THRESHOLD) {
+            return null;
+        }
 
+        return bestMatch;
+    }
+
+    private boolean isCloseMatch(String userInput, String faqQuestion) {
+        return faqQuestion.equalsIgnoreCase(userInput);
+    }
+
+    private int countMatchingKeywords(Set<Keyword> keywords, String userInput) {
+        int matchCount = 0;
+        for (Keyword keyword : keywords) {
+            String normalizedKeyword = normalizeText(keyword.getKeyword());
+            if (userInput.contains(normalizedKeyword)) {
+                matchCount++;
+            }
+        }
+        return matchCount;
+    }
+
+    private String normalizeText(String text) {
+        return text.toLowerCase().replaceAll("[^a-z0-9 ]", "").trim();
     }
 }
+
+
+

@@ -18,6 +18,8 @@ public class BasicWebController {
 
     private final ConversationService conversationService;
     private final ConversationFormatter conversationFormatter;
+    private String faqQuestion;
+    private String faqQuestionSource;
 
     @Autowired
     public BasicWebController(ConversationService conversationService, ConversationFormatter conversationFormatter) {
@@ -56,10 +58,20 @@ public class BasicWebController {
 
         String faqResponse = conversationService.handleFaq(userInput);
         if (faqResponse != null) {
+
+            faqQuestion = conversationService.getQuestion(userInput);
+            faqQuestionSource = conversationService.getSourceUrl(userInput);
+            System.out.println(faqQuestionSource);
+
+            model.addAttribute("faqQuestion", faqQuestion);
+            model.addAttribute("faqQuestionSource", faqQuestionSource);
+
             botResponse = faqResponse;
+            System.out.println("FAQ Response: " + faqResponse);
         } else {
             try {
                 botResponse = conversationService.generateGptResponse(userInput, conversationHistoryList, conversationId);
+                System.out.println("GPT Response: " + botResponse);
             } catch (Exception e) {
                 botResponse = "Please keep your questions related to financial advice.";
             }
@@ -68,7 +80,6 @@ public class BasicWebController {
         conversationService.saveConversationHistory(conversationId, userInput, botResponse);
         List<ConversationHistory> conversationHistory = conversationService.getConversationHistory(conversationId);
         model.addAttribute("conversationHistory", conversationHistory);
-        model.addAttribute("botPrompt", "Did this help answer your question?");
 
         return "home";
     }

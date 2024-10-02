@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversation History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link th:href="@{/css/adminStyles.css}" rel="stylesheet">
+</head>
+<body>
+<div class="header">
+    Sparta Finance Chatbot Admin
+</div>
+
+<div class="container">
+
+    <form th:action="@{history}" method="get" class="search-container">
+        <input type="text" id="searchInput" name="keyword" placeholder="Search conversations..." required class="search-input">
+        <input type="hidden" name="page" th:value="0" />
+        <input type="hidden" name="size" value="10" />
+        <button type="submit" class="search-button mt-4" >
+            <i class="bi bi-search"></i> Search
+        </button>
+    </form>
+
+<div th:if="${isSearch == true}" class="row center-align mt-5">
+    <div>
+        <b>Search query:</b> '<span th:text="${keyword}"></span>'
+    </div>
+</div>
+    <!-- Conversation History Table -->
+
+    <table th:if="${not conversations.isEmpty()}" class="table table-dark table-hover text-center">
+        <thead>
+        <tr>
+            <th>Conversation ID</th>
+            <th>Date Created</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="conversation : ${conversations}">
+            <td th:text="${conversation.getId()}">1</td>
+            <td th:if="${not #lists.isEmpty(conversation.getConversationHistories())}" th:text="${conversation.getConversationHistories[0].getId().getCreatedAt().toString().replace('T', ' ')}">2024-09-27T14:30:00</td>
+            <td th:if="${#lists.isEmpty(conversation.getConversationHistories())}">No Content</td>
+            <td th:if="${not #lists.isEmpty(conversation.getConversationHistories())}"><a th:href="@{'/admin/conversations/' + ${conversation.getId()}}" class="btn-sparta">View</a></td>
+            <td th:if="${#lists.isEmpty(conversation.getConversationHistories())}">No Content</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${conversations.isEmpty()}" class="center-align-container">
+        <div class="card-custom text-center">
+            <h4 class="card-title">No Conversations Found</h4>
+            <p class="card-text">
+                No conversations with user input of '<span th:text="${error}"></span>' found.
+            </p>
+            <form th:action="@{history}" method="get">
+                <button type="submit" class="btn-sparta">
+                    Back
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${isSearch == true}" class="row center-align mt-5">
+        <form th:action="@{history}" method="get" class="mt-4">
+            <button type="submit" class="btn-sparta">
+                Back to all conversations
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row center-align mt-3">
+    <span th:if="${isSearch == true}">
+        <button th:if="${currentPage > 0}"
+                th:attr="onclick=|location.href='/admin/history?keyword=' + '${keyword}' + '&page=' + (${currentPage} - 1) + '&size=10'|"
+                class="btn-sparta">Previous</button>
+        <button th:if="${conversations.size() >= 8}"
+                th:attr="onclick=|location.href='/admin/history?keyword=' + '${keyword}' + '&page=' + (${currentPage} + 1) + '&size=10'|"
+                class="btn-sparta">Next</button>
+    </span>
+    <span th:if="${isSearch == false}">
+        <button th:if="${currentPage > 0}"
+                th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} - 1) + '&size=10\''"
+                class="btn-sparta">Previous</button>
+        <button th:if="${conversations.size() >= 10}"
+                th:onclick="'location.href=\'/admin/history?page=' + (${currentPage} + 1) + '&size=10\''"
+                class="btn-sparta">Next</button>
+    </span>
+</div>
+<div class="row center-align">
+    <span th:text="'Page ' + (${currentPage} + 1)"></span>
+</div>
+
+<!--<footer class="footer">-->
+<!--    <p>&copy; <span th:text="${currentYear}">2024</span> Sparta Global. All rights reserved.</p>-->
+<!--</footer>-->
+
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversation History</title>
+    <link th:href="@{/css/adminStyles.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+<div class="header">
+    Financial Chatbot Central
+</div>
+<div class="container">
+    <table class="centered">
+        <thead>
+        <tr>
+            <th>User Input</th>
+            <th>Bot Response</th>
+            <th>Timestamp</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate through each conversation and display in table rows -->
+        <tr th:each="conversation : ${conversation}">
+            <td th:text="${conversation.getInput()}">Input</td>
+            <td th:text="${conversation.getResponse()}">Response</td>
+            <td th:text="${conversation.getId().getCreatedAt().toString().replace('T',' ')}">Timestamp</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="row center-align">
+        <a onclick="history.back()" class="btn-sparta">Back</a>
+    </div>
+</div>
+
+<!--<footer class="footer">-->
+<!--    <p>&copy; <span th:text="${currentYear}">2024</span> Sparta Global. All rights reserved.</p>-->
+<!--</footer>-->
+
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

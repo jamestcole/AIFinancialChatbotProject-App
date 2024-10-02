@@ -38,9 +38,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="conversation : ${conversations}" th:if="${not #lists.isEmpty(conversation.getConversationHistories())}">
+        <tr th:each="conversation : ${conversations}">
             <td th:text="${conversation.getId()}">1</td>
-            <td th:text="${conversation.getConversationHistories[0].getId().getCreatedAt().toString().replace('T', ' ')}">2024-09-27T14:30:00</td>
+            <td th:if="${not #lists.isEmpty(conversation.getConversationHistories())}" th:text="${conversation.getConversationHistories[0].getId().getCreatedAt().toString().replace('T', ' ')}">2024-09-27T14:30:00</td>
+            <td th:if="${#lists.isEmpty(conversation.getConversationHistories())}">No Content</td>
             <td><a th:href="@{'/admin/conversations/' + ${conversation.getId()}}" class="btn-sparta">View</a></td>
         </tr>
         </tbody>
@@ -74,7 +75,7 @@
         <button th:if="${currentPage > 0}"
                 th:attr="onclick=|location.href='/admin/history?keyword=' + '${keyword}' + '&page=' + (${currentPage} - 1) + '&size=10'|"
                 class="btn-sparta">Previous</button>
-        <button th:if="${conversations.size() >= 10}"
+        <button th:if="${conversations.size() >= 8}"
                 th:attr="onclick=|location.href='/admin/history?keyword=' + '${keyword}' + '&page=' + (${currentPage} + 1) + '&size=10'|"
                 class="btn-sparta">Next</button>
     </span>

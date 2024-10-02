@@ -64,8 +64,8 @@ public class ApiController {
     }
     @GetMapping("/conversations/containing")
     public ResponseEntity<List<ConversationId>> getAllConversationsContaining(@RequestParam String keyword,
-                                                                              @RequestParam (defaultValue = "0") Integer page,
-                                                                              @RequestParam (defaultValue = "10") Integer size) {
+                                                                              @RequestParam (defaultValue = "0") int page,
+                                                                              @RequestParam (defaultValue = "10") int size) {
         List<ConversationId> conversationsWithKeywords = conversationApiService.getAllConversationsContainingKeyword(keyword, page, size).getContent();
         return ResponseEntity.ok(conversationsWithKeywords);
     }

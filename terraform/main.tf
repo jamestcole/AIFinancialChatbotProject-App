@@ -119,6 +119,7 @@ resource "aws_instance" "app_server" {
 
               # Navigate to the project directory and build the Java project
               cd /var/www/html/app
+              pip install mysql-connector
 
               # Compile and run your Java project
               #./mvnw clean install
@@ -186,7 +187,7 @@ resource "aws_instance" "db_server" {
               # git clone https://$${GITHUB_TOKEN}:x-oauth-basic@github.com/spartaproject2024/https://github.com/Yoonhee-Uni/AI_chatbot_project.git /
               
               # Run the Python script from the root directory
-              # sudo python3 /script.py
+              # sudo python3 script.py
 
               # Configure MySQL to allow external access
               sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf

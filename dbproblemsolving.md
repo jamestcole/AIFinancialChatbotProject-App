@@ -16,6 +16,30 @@ CREATE USER 'app_user'@'%' IDENTIFIED BY 'your_password';
 GRANT ALL PRIVILEGES ON question_bank_chatbot.* TO 'app_user'@'%';
 FLUSH PRIVILEGES;
 ```
+## setting up database
+-- Access MySQL
+sudo mysql
+
+-- List users
+SELECT User, Host FROM mysql.user;
+
+-- Delete an unwanted user
+DROP USER 'old_user'@'%';
+
+-- Create a new user
+CREATE USER 'new_user'@'%' IDENTIFIED BY 'new_password';
+
+-- Grant privileges
+GRANT ALL PRIVILEGES ON *.* TO 'new_user'@'%' WITH GRANT OPTION;
+
+-- Flush privileges
+FLUSH PRIVILEGES;
+
+-- Verify the user and privileges
+SHOW GRANTS FOR 'new_user'@'%';
+
+-- Exit MySQL
+EXIT;
 ## Database connection settings
 spring.datasource.url=jdbc:mysql://<DB_HOST>:3306/question_bank_chatbot
 spring.datasource.username=app_user  # The username you created
@@ -35,3 +59,37 @@ CREATE TABLE conversation_ids (
 );
 
 INSERT INTO conversation_ids (field1, field2) VALUES ('val1', 'val2');
+
+
+Steps to Uninstall MySQL:
+Stop MySQL Service:
+
+bash
+Copy code
+sudo systemctl stop mysql
+Uninstall MySQL:
+
+bash
+Copy code
+sudo apt remove --purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*
+Remove MySQL Data Directory:
+
+bash
+Copy code
+sudo rm -rf /var/lib/mysql
+Remove MySQL Configuration Files:
+
+bash
+Copy code
+sudo rm -rf /etc/mysql
+Reinstall MySQL:
+
+bash
+Copy code
+sudo apt update
+sudo apt install mysql-server
+Secure MySQL Installation: After reinstalling, run:
+
+bash
+Copy code
+sudo mysql_secure_installation

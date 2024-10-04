@@ -76,9 +76,9 @@ mvn spring-boot:run
 ---
 ## Documentation
 
-All documentation can be found in the 'Documentation' directory in the project root. Access via: [Documentation](https://github.com/JamesCole-Dev/AIFinancialChatbotProject-App/blob/main/Documentation)
+All documentation can be found in the 'Documentation' directory in the project root. Access via: [Documentation](https://github.com/jamestcole/AIFinancialChatbotProject-App/tree/main/Documentation)
 
-A link to the demo video can be found via: [Video](https://github.com/JamesCole-Dev/AIFinancialChatbotProject-App/blob/main/Documentation/SG_Financial_Chatbot_DemoV3.mp4)
+A link to the demo video can be found via: [Video](https://github.com/jamestcole/AIFinancialChatbotProject-App/blob/main/Documentation/SG_FinancialChatbotDemoV3.mp4)
 
 Or see here: 
 

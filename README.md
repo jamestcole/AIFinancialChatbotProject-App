@@ -80,12 +80,6 @@ All documentation can be found in the 'Documentation' directory in the project r
 
 A link to the demo video can be found via: [Video](https://github.com/jamestcole/AIFinancialChatbotProject-App/blob/main/Documentation/SG_FinancialChatbotDemoV3.mp4)
 
-Or see here: 
-
-<video width="320" height="240" controls>
-  <source src="/Documentation/SG_FinancialChatbotDemoV3.mp4" type="video/mp4">
-</video>
-
 For a link to the data repo, see here: [Data](https://github.com/Yoonhee-Uni/AI_chatbot_project)
 
 ## Note:

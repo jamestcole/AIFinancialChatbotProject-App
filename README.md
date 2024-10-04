@@ -60,21 +60,33 @@ USE chatbot_faqs;
 -- Import your FAQ data here
 ```
 #### Step 3: Update the application.properties file
-spring.datasource.url=jdbc:mysql://localhost:3306/chatbot_faqs
-
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/question_bank_chatbot
 spring.datasource.username=your_username
-
 spring.datasource.password=your_password
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+```
 
 #### Step 4: Start the app using Maven
+```bash
 cd path/to/project
-
-cli: mvn spring-boot:run
+mvn spring-boot:run
+```
 
 ---
 ## Documentation
 
-All documentation can be found in the 'Documentation' directory in the project root. 
+All documentation can be found in the 'Documentation' directory in the project root. Access via: [Documentation](https://github.com/JamesCole-Dev/AIFinancialChatbotProject-App/blob/main/Documentation)
+
+A link to the demo video can be found via: [Video](https://github.com/JamesCole-Dev/AIFinancialChatbotProject-App/blob/main/Documentation/SG_Financial_Chatbot_DemoV3.mp4)
+
+Or see here: 
+
+<video width="320" height="240" controls>
+  <source src="/Documentation/SG_FinancialChatbotDemoV3.mp4" type="video/mp4">
+</video>
+
+For a link to the data repo, see here: [Data](https://github.com/Yoonhee-Uni/AI_chatbot_project)
 
 ## Note:
 

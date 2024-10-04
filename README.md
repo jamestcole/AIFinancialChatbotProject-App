@@ -16,7 +16,7 @@ The application is hosted on **AWS** and can be accessed via the hosted URL or b
 - **FAQ Database (MySQL)**: Contains frequently asked questions and answers about financial topics.
 - **Two-Tier Response System**:
     - First, checks the database for relevant FAQs.
-    - If no FAQ matches the user query, forwards the query to OpenAI's API for a response.
+    - If no FAQ matches the user query, forwards the query to OpenAI's API **(hosted on Azure)** for a response.
 - **AWS Hosted**: The chatbot is deployed and hosted on AWS, accessible via a web interface.
 - **Spring Boot Application**: Easily start the project locally using Spring Boot.
 
@@ -39,6 +39,8 @@ To run the project locally, ensure you have the following installed:
 
 The project is hosted on AWS. To use the chatbot, simply navigate to the hosted URL in a web browser:
 
+http://3.251.65.214:8080/chat
+
 
 ### 2. **Run Locally via Spring Boot**
 
@@ -58,10 +60,34 @@ USE chatbot_faqs;
 -- Import your FAQ data here
 ```
 #### Step 3: Update the application.properties file
-spring.datasource.url=jdbc:mysql://localhost:3306/chatbot_faqs
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/question_bank_chatbot
 spring.datasource.username=your_username
 spring.datasource.password=your_password
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+```
 
 #### Step 4: Start the app using Maven
-cli: mvn spring-boot:run
+```bash
+cd path/to/project
+mvn spring-boot:run
+```
 
+---
+## Documentation
+
+All documentation can be found in the 'Documentation' directory in the project root. Access via: [Documentation](https://github.com/JamesCole-Dev/AIFinancialChatbotProject-App/blob/main/Documentation)
+
+A link to the demo video can be found via: [Video](https://github.com/JamesCole-Dev/AIFinancialChatbotProject-App/blob/main/Documentation/SG_Financial_Chatbot_DemoV3.mp4)
+
+Or see here: 
+
+<video width="320" height="240" controls>
+  <source src="/Documentation/SG_FinancialChatbotDemoV3.mp4" type="video/mp4">
+</video>
+
+For a link to the data repo, see here: [Data](https://github.com/Yoonhee-Uni/AI_chatbot_project)
+
+## Note:
+
+This project has now concluded and won't be available at the hosted URL from 04/10/2024. 

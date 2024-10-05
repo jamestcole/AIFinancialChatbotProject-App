@@ -31,11 +31,23 @@ Edit the Database Configuration File:
 For MySQL, edit /etc/mysql/mysql.conf.d/mysqld.cnf or similar configuration file.
 Look for the line that starts with bind-address. Change it to:
 plaintext
-Copy code
+```
 bind-address = 0.0.0.0
+```
 This allows the database to accept connections from any IP address.
 Restart the Database Service:
 
-bash
-Copy code
+Check the connection between the database and the App
+
+In the app instance use this :
+
+```
+mysql -h <db_private_ip> -u <user> -p
+```
+Check the account exists and check the tables exist and have been built by script.py:
+```
+USE question_bank_chatbot;
+EXIT
+```
+
 sudo systemctl restart mysql

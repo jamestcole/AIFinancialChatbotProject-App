@@ -122,6 +122,7 @@ resource "aws_instance" "app_server" {
 
               sudo apt install -y python3 python3-pip
               pip3 install mysql-connector
+              sudo apt install mysql-client-core-8.0
 
               # Compile and run your Java project
               #./mvnw clean install

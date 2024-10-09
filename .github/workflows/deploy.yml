@@ -20,8 +20,66 @@ jobs:
 
       - name: Inject GitHub Secret for OpenAI API Key
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+      
+      - name: Build Maven Project
+        run: mvn clean install -Dmaven.test.skip=true  # Builds the Maven project, skipping tests
 
-      - name: Build and run application
+      - name: Stop Running Application
         run: |
-          mvn clean install -Dmaven.test.skip=true
+          echo "Stopping any running instance of the application..."
+          pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar' || echo "No instance running."
+
+      - name: Start Application
+        run: |
+          echo "Starting the application..."
           java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar &
+
+      - name: Run Startup Script
+        run: |
+          echo "Running startup script..."
+          sudo apt update -y
+          sudo apt install -y openjdk-21-jdk maven apache2 git
+          
+          # Navigate to the project directory and build the Java project
+          cd /var/www/html/app
+
+          echo "Installing additional dependencies..."
+          sudo apt install -y python3 python3-pip
+          pip3 install mysql-connector
+          sudo apt install mysql-client-core-8.0
+
+          echo "Copying files to the Apache web server..."
+          sudo cp -r /var/www/html/app/src/main/resources/templates/* /var/www/html/
+          
+          echo "Setting up Apache web server..."
+          sudo a2enmod proxy
+          sudo a2enmod proxy_http
+
+          echo "Configuring Apache virtual host..."
+          echo "<VirtualHost *:80>
+              ServerAdmin webmaster@localhost
+              DocumentRoot /var/www/html
+
+              ProxyRequests Off
+              ProxyPreserveHost On
+
+              <Proxy *>
+                  Order allow,deny
+                  Allow from all
+              </Proxy>
+
+              ProxyPass / http://localhost:8080/
+              ProxyPassReverse / http://localhost:8080/
+              ErrorLog $${APACHE_LOG_DIR}/error.log
+              CustomLog $${APACHE_LOG_DIR}/access.log combined
+
+          </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
+
+          echo "Compiling Maven project and skipping tests..."
+          sudo mvn clean install -DskipTests
+
+          echo "Starting Apache server..."
+          sudo systemctl start apache2
+          sudo systemctl enable apache2
+          
+          echo "Startup script completed successfully."

@@ -17,7 +17,8 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '21'
-          distribution: 'temurin'  # Choose the JDK distribution (temurin is commonly used)
+          distribution: 'jdkfile'  # Choose the JDK distribution (temurin is commonly used)
+          jdkFile: '/usr/lib/jvm/java-21-openjdk-amd64'
 
       - name: Verify Java Version
         run: |

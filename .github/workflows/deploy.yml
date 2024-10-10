@@ -29,7 +29,7 @@ jobs:
 
       - name: Clean Maven Project
         run: mvn clean
-        
+
       - name: Build Maven Project
         run: mvn clean install -Dmaven.test.skip=true  # Builds the Maven project, skipping tests
       
@@ -92,10 +92,14 @@ jobs:
           </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
 
           echo "Compiling Maven project and skipping tests..."
-          sudo mvn clean install -DskipTests
+          sudo mvn clean install -DskipTests -e
+          
+
 
           echo "Starting Apache server..."
           sudo systemctl start apache2
           sudo systemctl enable apache2
           
+          java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & -e
+
           echo "Startup script completed successfully."

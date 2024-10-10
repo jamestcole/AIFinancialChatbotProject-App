@@ -66,6 +66,14 @@ jobs:
           # sudo apt install mysql-client-core-8.0
           echo "JavaHome"
           echo $JAVA_HOME
+          
+          echo "Setting ServerName directive..."
+          echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
+          sudo a2enconf servername
+          # Set the ServerName directive globally
+
+
+
           echo "Copying files to the Apache web server..."
           sudo cp -r /var/www/html/app/src/main/resources/templates/* /var/www/html/
           
@@ -88,11 +96,13 @@ jobs:
 
               ProxyPass / http://localhost:8080/
               ProxyPassReverse / http://localhost:8080/
-              ErrorLog $${APACHE_LOG_DIR}/error.log
-              CustomLog $${APACHE_LOG_DIR}/access.log combined
+              ErrorLog /var/log/apache2/error.log  # Direct path for ErrorLog
+              CustomLog /var/log/apache2/access.log combined  # Direct path for CustomLog
 
           </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
+          # Enable the site configuration
           export JAVA_HOME=/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.4-7/x64
+          sudo a2ensite 000-default
           export PATH=$JAVA_HOME/bin:$PATH
           java -version
           # Verify that JAVA_HOME is set correctly
@@ -100,7 +110,8 @@ jobs:
           echo "Compiling Maven project and skipping tests..."
           export MAVEN_OPTS="-Dmaven.compiler.source=21 -Dmaven.compiler.target=21"
           sudo -E mvn clean install -U -DskipTests -X
-          
+          sudo netstat -tuln | grep ':80'
+          sudo netstat -tuln | grep ':443'
 
 
           echo "Starting Apache server..."

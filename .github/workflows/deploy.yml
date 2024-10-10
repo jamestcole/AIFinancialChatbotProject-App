@@ -99,7 +99,7 @@ jobs:
           echo "Using JAVA_HOME: $JAVA_HOME"
           echo "Compiling Maven project and skipping tests..."
           export MAVEN_OPTS="-Dmaven.compiler.source=21 -Dmaven.compiler.target=21"
-          sudo mvn clean install -U -DskipTests -X
+          sudo -E mvn clean install -U -DskipTests -X
           
 
 

@@ -13,15 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Install OpenJDK 21
-        run: sudo apt-get update && sudo apt-get install -y openjdk-21-jdk
-        
-      - name: Set up JDK 21
-        uses: actions/setup-java@v2
+      - name: Set up Temurin JDK 21
+        uses: actions/setup-java@v4  # Use the latest version of the action
         with:
           java-version: '21'
-          distribution: 'jdkfile'  # Choose the JDK distribution (temurin is commonly used)
-          jdkFile: '/usr/lib/jvm/java-21-openjdk-amd64'
+          distribution: 'temurin'
+  # Choose the JDK distribution (temurin is commonly used)
 
       - name: Verify Java Version
         run: |
@@ -54,7 +51,7 @@ jobs:
         run: |
           echo "Running startup script..."
           sudo apt update -y
-          sudo apt install -y openjdk-21-jdk maven apache2 git
+          sudo apt install -y maven apache2 git
 
           # Create the directory and move files from GitHub Actions working directory to /var/www/html/app
           sudo mkdir -p /var/www/html/app

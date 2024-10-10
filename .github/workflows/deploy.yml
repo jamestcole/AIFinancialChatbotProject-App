@@ -93,7 +93,7 @@ jobs:
           </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
 
           echo "Compiling Maven project and skipping tests..."
-          sudo mvn clean install -DskipTests -X
+          sudo mvn clean install -U -DskipTests -X
           
 
 

@@ -50,8 +50,8 @@ jobs:
 
           echo "Installing additional dependencies..."
           # sudo apt install -y python3 python3-pip
-          pip3 install mysql-connector
-          sudo apt install mysql-client-core-8.0
+          # pip3 install mysql-connector
+          # sudo apt install mysql-client-core-8.0
 
           echo "Copying files to the Apache web server..."
           sudo cp -r /var/www/html/app/src/main/resources/templates/* /var/www/html/

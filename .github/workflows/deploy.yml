@@ -92,7 +92,11 @@ jobs:
               CustomLog $${APACHE_LOG_DIR}/access.log combined
 
           </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
+          export JAVA_HOME=/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.4-7/x64
+          export PATH=$JAVA_HOME/bin:$PATH
 
+          # Verify that JAVA_HOME is set correctly
+          echo "Using JAVA_HOME: $JAVA_HOME"
           echo "Compiling Maven project and skipping tests..."
           sudo mvn clean install -U -DskipTests -X
           

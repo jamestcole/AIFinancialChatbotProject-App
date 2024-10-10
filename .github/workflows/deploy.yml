@@ -27,11 +27,9 @@ jobs:
       - name: Inject GitHub Secret for OpenAI API Key
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
-      - name: Set MAVEN_OPTS to use JDK 21
-        run: |
-          echo "MAVEN_OPTS='-Dorg.gradle.java.home=/usr/lib/jvm/temurin-21-jdk-amd64'" >> $GITHUB_ENV
       - name: Clean Maven Project
         run: mvn clean
+        
       - name: Build Maven Project
         run: mvn clean install -Dmaven.test.skip=true  # Builds the Maven project, skipping tests
       

@@ -21,13 +21,15 @@ jobs:
 
       - name: Verify Java Version
         run: java -version  # This will show the installed JDK version
-        
+
       - name: Inject GitHub Secret for OpenAI API Key
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
       
       - name: Build Maven Project
         run: mvn clean install -Dmaven.test.skip=true  # Builds the Maven project, skipping tests
-
+      
+      - name: Verify Maven Version
+        run: mvn -version
       - name: Stop Running Application
         run: |
           echo "Stopping any running instance of the application..."

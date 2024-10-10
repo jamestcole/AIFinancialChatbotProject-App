@@ -19,6 +19,9 @@ jobs:
           java-version: '21'
           distribution: 'temurin'  # Choose the JDK distribution (temurin is commonly used)
 
+      - name: Verify Java Version
+        run: java -version  # This will show the installed JDK version
+        
       - name: Inject GitHub Secret for OpenAI API Key
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
       

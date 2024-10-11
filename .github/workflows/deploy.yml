@@ -112,7 +112,7 @@ jobs:
           sudo -E mvn clean install -U -DskipTests -X
           ####
           sudo systemctl daemon-reload
-          sudo a2enmod mpm_prefork
+          sudo apache2ctl -M | grep mpm
           ####
           sudo ufw allow 80/tcp
           sudo ufw allow 443/tcp
@@ -121,6 +121,7 @@ jobs:
 
           echo "Enabling mpm_prefork module..."
           sudo a2enmod mpm_prefork
+          sudo systemctl daemon-reload
           # sudo netstat -tuln | grep ':443'
           echo "Updating package list and installing Apache..."
           sudo apt-get update

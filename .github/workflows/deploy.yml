@@ -113,6 +113,24 @@ jobs:
 
           sudo ufw allow 80/tcp
           # sudo netstat -tuln | grep ':443'
+          ####
+          PROCESS=$(lsof -t -i :80)
+
+          
+          if [ -n "$PROCESS" ]; then
+              echo "Port 80 is in use by process ID(s): $PROCESS"
+              for PID in $PROCESS; do
+                  # Stop the service/process using port 80
+                  sudo kill -9 $PID  # Forcefully stop the process
+                  echo "Stopping process with ID: $PID"
+              done
+          else
+              echo "Port 80 is free."    
+          fi
+          
+
+          ####
+          echo "Copying files to the Apache web server..."
           echo "Starting Apache server..."
           sudo journalctl -xe
           sudo apachectl configtest

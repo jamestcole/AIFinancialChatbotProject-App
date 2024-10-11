@@ -114,7 +114,11 @@ jobs:
           sudo ufw allow 80/tcp
           sudo ufw allow 443/tcp
           # sudo netstat -tuln | grep ':443'
-          
+          echo "Updating package list and installing Apache..."
+          sudo apt-get update
+          sudo apt-get install -y apache2
+          echo "Ensuring Apache configuration directory exists..."
+          ls /etc/apache2
 
           ####
           echo "Copying files to the Apache web server..."

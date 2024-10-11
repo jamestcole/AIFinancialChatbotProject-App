@@ -68,8 +68,8 @@ jobs:
           echo $JAVA_HOME
           
           echo "Setting ServerName directive..."
-          echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
-          sudo a2enconf servername
+          # echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
+          # sudo a2enconf servername
           # Set the ServerName directive globally
 
 

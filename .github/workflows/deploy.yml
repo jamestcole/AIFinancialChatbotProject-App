@@ -117,6 +117,11 @@ jobs:
           ####
           sudo ufw allow 80/tcp
           sudo ufw allow 443/tcp
+          echo "Disabling mpm_event to avoid conflict with mpm_prefork..."
+          sudo a2dismod mpm_event
+
+          echo "Enabling mpm_prefork module..."
+          sudo a2enmod mpm_prefork
           # sudo netstat -tuln | grep ':443'
           echo "Updating package list and installing Apache..."
           sudo apt-get update

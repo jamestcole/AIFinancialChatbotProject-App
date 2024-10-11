@@ -110,10 +110,9 @@ jobs:
           echo "Compiling Maven project and skipping tests..."
           export MAVEN_OPTS="-Dmaven.compiler.source=21 -Dmaven.compiler.target=21"
           sudo -E mvn clean install -U -DskipTests -X
-          sudo netstat -tuln | grep ':80'
-          sudo netstat -tuln | grep ':443'
 
 
+          # sudo netstat -tuln | grep ':443'
           echo "Starting Apache server..."
           sudo apachectl configtest
           sudo tail -n 50 /var/log/apache2/error.log

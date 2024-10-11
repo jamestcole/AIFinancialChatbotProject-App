@@ -39,7 +39,7 @@ jobs:
             
             # Restart your application or server
             pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar' || echo "No instance running."
-            nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar &
+            nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & disown
 
             # Restart Apache (if needed)
             sudo systemctl restart apache2

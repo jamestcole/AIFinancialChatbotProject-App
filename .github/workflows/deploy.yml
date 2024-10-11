@@ -111,39 +111,39 @@ jobs:
           export MAVEN_OPTS="-Dmaven.compiler.source=21 -Dmaven.compiler.target=21"
           sudo -E mvn clean install -U -DskipTests -X
           ####
-          sudo systemctl daemon-reload
-          sudo apache2ctl -M | grep mpm
+          # sudo systemctl daemon-reload
+          # sudo apache2ctl -M | grep mpm
           ####
-          sudo ufw allow 80/tcp
-          sudo ufw allow 443/tcp
-          echo "Disabling mpm_event to avoid conflict with mpm_prefork..."
-          sudo a2dismod mpm_event
+          # sudo ufw allow 80/tcp
+          # sudo ufw allow 443/tcp
+          # echo "Disabling mpm_event to avoid conflict with mpm_prefork..."
+          # sudo a2dismod mpm_event
 
-          echo "Enabling mpm_prefork module..."
-          sudo a2enmod mpm_prefork
-          sudo systemctl daemon-reload
+          # echo "Enabling mpm_prefork module..."
+          # sudo a2enmod mpm_prefork
+          # sudo systemctl daemon-reload
           # sudo netstat -tuln | grep ':443'
-          echo "Updating package list and installing Apache..."
-          sudo apt-get update
-          sudo apt-get install -y apache2
-          echo "Ensuring Apache configuration directory exists..."
-          ls /etc/apache2
-          echo "Setting ServerName to localhost..."
-          echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
-          sudo a2enconf servername
+          # echo "Updating package list and installing Apache..."
+          # sudo apt-get update
+          # sudo apt-get install -y apache2
+          # echo "Ensuring Apache configuration directory exists..."
+          # ls /etc/apache2
+          # echo "Setting ServerName to localhost..."
+          # echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
+          # sudo a2enconf servername
           ####
-          echo "Copying files to the Apache web server..."
-          echo "Starting Apache server..."
-          sudo journalctl -xe
-          sudo apachectl configtest
-          sudo tail -n 50 /var/log/apache2/error.log
-          sudo systemctl status apache2.service
+          # echo "Copying files to the Apache web server..."
+          # echo "Starting Apache server..."
+          # sudo journalctl -xe
+          # sudo apachectl configtest
+          # sudo tail -n 50 /var/log/apache2/error.log
+          # sudo systemctl status apache2.service
           # Start the Apache server
-          echo "Starting Apache server..."
-          systemctl start apache2 
+          # echo "Starting Apache server..."
+          # systemctl start apache2 
 
           # sudo tail -n 50 /var/log/apache2/error.log
-          systemctl enable apache2
+          # systemctl enable apache2
           # sudo systemctl status apache2.service
           # java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & -e
 

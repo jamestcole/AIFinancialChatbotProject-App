@@ -12,143 +12,36 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
       - name: Set up Temurin JDK 21
-        uses: actions/setup-java@v4  # Use the latest version of the action
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-  # Choose the JDK distribution (temurin is commonly used)
-
-      - name: Verify Java Version
-        run: |
-          java -version
-          echo $JAVA_HOME  # This will show the installed JDK version
-
-      - name: Inject GitHub Secret for OpenAI API Key
-        run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
-
-      - name: Clean Maven Project
-        run: mvn clean
 
       - name: Build Maven Project
-        run: mvn clean install -Dmaven.test.skip=true  # Builds the Maven project, skipping tests
-      
-      - name: Verify Maven Version
-        run: mvn -version
+        run: mvn clean install -Dmaven.test.skip=true
 
-      - name: Stop Running Application
+      - name: Set up SSH key
         run: |
-          echo "Stopping any running instance of the application..."
-          pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar' || echo "No instance running."
+          echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > aws_key.pem
+          chmod 600 aws_key.pem
 
-      - name: Start Application
+      - name: Deploy to AWS Instance
         run: |
-          echo "Starting the application..."
-          java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar &
+          ssh -o StrictHostKeyChecking=no -i aws_key.pem ubuntu@<YOUR_AWS_INSTANCE_IP> << 'EOF'
+            echo "Connected to AWS instance"
+            # Navigate to the app directory
+            cd /var/www/html/app
+            
+            # Pull latest changes from Git (optional, if you're using Git to manage code)
+            git pull origin terra
+            
+            # Restart your application or server
+            pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar' || echo "No instance running."
+            nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar &
 
-      - name: Run Startup Script
-        run: |
-          echo "Running startup script..."
-          sudo apt update -y
-          sudo apt install -y maven apache2 git
+            # Restart Apache (if needed)
+            sudo systemctl restart apache2
+          EOF
 
-          # Create the directory and move files from GitHub Actions working directory to /var/www/html/app
-          sudo mkdir -p /var/www/html/app
-          sudo cp -r $GITHUB_WORKSPACE/* /var/www/html/app/
-          
-          # Navigate to the project directory and build the Java project
-          cd /var/www/html/app
-          echo "Listen 80" | sudo tee /etc/apache2/ports.conf
-          echo "Listen 443" | sudo tee -a /etc/apache2/ports.conf
-          
-          # Optionally, ensure that there's no Listen directive for 8080
-          sudo sed -i '/Listen 8080/d' /etc/apache2/ports.conf
-          echo "Installing additional dependencies..."
-          # sudo apt install -y python3 python3-pip
-          # pip3 install mysql-connector
-          # sudo apt install mysql-client-core-8.0
-          echo "JavaHome"
-          echo $JAVA_HOME
-          
-          echo "Setting ServerName directive..."
-          # echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
-          # sudo a2enconf servername
-          # Set the ServerName directive globally
-
-
-
-          echo "Copying files to the Apache web server..."
-          sudo cp -r /var/www/html/app/src/main/resources/templates/* /var/www/html/
-          
-          echo "Setting up Apache web server..."
-          sudo a2enmod proxy
-          sudo a2enmod proxy_http
-
-          echo "Configuring Apache virtual host..."
-          echo "<VirtualHost *:80>
-              ServerAdmin webmaster@localhost
-              DocumentRoot /var/www/html
-
-              ProxyRequests Off
-              ProxyPreserveHost On
-
-              <Proxy *>
-                  Order allow,deny
-                  Allow from all
-              </Proxy>
-
-              ProxyPass / http://localhost:8080/
-              ProxyPassReverse / http://localhost:8080/
-              ErrorLog /var/log/apache2/error.log  
-              CustomLog /var/log/apache2/access.log combined  
-
-          </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
-          # Enable the site configuration
-          export JAVA_HOME=/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.4-7/x64
-          sudo a2ensite 000-default
-          export PATH=$JAVA_HOME/bin:$PATH
-          java -version
-          # Verify that JAVA_HOME is set correctly
-          echo "Using JAVA_HOME: $JAVA_HOME"
-          echo "Compiling Maven project and skipping tests..."
-          export MAVEN_OPTS="-Dmaven.compiler.source=21 -Dmaven.compiler.target=21"
-          sudo -E mvn clean install -U -DskipTests -X
-          ####
-          # sudo systemctl daemon-reload
-          # sudo apache2ctl -M | grep mpm
-          ####
-          # sudo ufw allow 80/tcp
-          # sudo ufw allow 443/tcp
-          # echo "Disabling mpm_event to avoid conflict with mpm_prefork..."
-          # sudo a2dismod mpm_event
-
-          # echo "Enabling mpm_prefork module..."
-          # sudo a2enmod mpm_prefork
-          # sudo systemctl daemon-reload
-          # sudo netstat -tuln | grep ':443'
-          # echo "Updating package list and installing Apache..."
-          # sudo apt-get update
-          # sudo apt-get install -y apache2
-          # echo "Ensuring Apache configuration directory exists..."
-          # ls /etc/apache2
-          # echo "Setting ServerName to localhost..."
-          # echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
-          # sudo a2enconf servername
-          ####
-          # echo "Copying files to the Apache web server..."
-          # echo "Starting Apache server..."
-          # sudo journalctl -xe
-          # sudo apachectl configtest
-          # sudo tail -n 50 /var/log/apache2/error.log
-          # sudo systemctl status apache2.service
-          Start the Apache server
-          echo "Starting Apache server..."
-          systemctl start apache2 
-
-          # sudo tail -n 50 /var/log/apache2/error.log
-          # systemctl enable apache2
-          # sudo systemctl status apache2.service
-          # java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & -e
-
-          # echo "Startup script completed successfully."

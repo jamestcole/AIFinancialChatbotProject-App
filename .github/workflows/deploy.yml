@@ -125,11 +125,8 @@ jobs:
           sudo systemctl status apache2.service
           # Start the Apache server
           echo "Starting Apache server..."
-          if ! sudo systemctl start apache2 >> /var/log/apache2/startup_script.log 2>&1; then
-              echo "Failed to start Apache server. Check logs for details."
-              capture_logs
-              exit 1  # Exit if Apache fails to start
-          fi
+          sudo systemctl start apache2 
+
           sudo tail -n 50 /var/log/apache2/error.log
           sudo systemctl enable apache2
           sudo systemctl status apache2.service

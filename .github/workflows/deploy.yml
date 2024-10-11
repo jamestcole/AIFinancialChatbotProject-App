@@ -140,10 +140,10 @@ jobs:
           sudo systemctl status apache2.service
           # Start the Apache server
           echo "Starting Apache server..."
-          # systemctl start apache2 
+          systemctl start apache2 
 
           # sudo tail -n 50 /var/log/apache2/error.log
-          # systemctl enable apache2
+          systemctl enable apache2
           # sudo systemctl status apache2.service
           # java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & -e
 

@@ -103,7 +103,7 @@ jobs:
           # Enable the site configuration
           export JAVA_HOME=/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.4-7/x64
           sudo a2ensite 000-default
-          systemctl reload apache2
+          sudo systemctl reload apache2
           export PATH=$JAVA_HOME/bin:$PATH
           java -version
           # Verify that JAVA_HOME is set correctly

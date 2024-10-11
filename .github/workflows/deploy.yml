@@ -119,7 +119,9 @@ jobs:
           sudo apt-get install -y apache2
           echo "Ensuring Apache configuration directory exists..."
           ls /etc/apache2
-
+          echo "Setting ServerName to localhost..."
+          echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
+          sudo a2enconf servername
           ####
           echo "Copying files to the Apache web server..."
           echo "Starting Apache server..."

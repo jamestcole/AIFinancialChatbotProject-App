@@ -128,8 +128,8 @@ jobs:
           # systemctl start apache2 
 
           # sudo tail -n 50 /var/log/apache2/error.log
-          systemctl enable apache2
-          sudo systemctl status apache2.service
-          java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & -e
+          # systemctl enable apache2
+          # sudo systemctl status apache2.service
+          # java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & -e
 
           # echo "Startup script completed successfully."

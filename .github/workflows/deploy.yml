@@ -111,7 +111,7 @@ jobs:
           export MAVEN_OPTS="-Dmaven.compiler.source=21 -Dmaven.compiler.target=21"
           sudo -E mvn clean install -U -DskipTests -X
 
-
+          sudo ufw allow 80/tcp
           # sudo netstat -tuln | grep ':443'
           echo "Starting Apache server..."
           sudo apachectl configtest

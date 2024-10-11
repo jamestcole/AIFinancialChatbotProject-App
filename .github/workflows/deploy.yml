@@ -96,8 +96,8 @@ jobs:
 
               ProxyPass / http://localhost:8080/
               ProxyPassReverse / http://localhost:8080/
-              ErrorLog /var/log/apache2/error.log  # Direct path for ErrorLog
-              CustomLog /var/log/apache2/access.log combined  # Direct path for CustomLog
+              ErrorLog /var/log/apache2/error.log  
+              CustomLog /var/log/apache2/access.log combined  
 
           </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
           # Enable the site configuration

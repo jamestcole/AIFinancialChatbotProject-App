@@ -37,6 +37,9 @@ jobs:
             echo "Running as user: \$(whoami)"
 
             sudo chown -R ubuntu:ubuntu .git
+
+            # Make sure Git ignores local changes to application.properties
+            git update-index --skip-worktree src/main/resources/application.properties
             
             # Pull latest changes from Git (optional, if you're using Git to manage code)
             git pull origin terra

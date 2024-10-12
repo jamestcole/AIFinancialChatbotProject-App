@@ -207,8 +207,8 @@ resource "aws_instance" "db_server" {
               # mysql -u root -e "GRANT ALL PRIVILEGES ON question_bank_chatbot TO 'root'@'%';"
               # mysql -u root -e "FLUSH PRIVILEGES;"
 
-              # mysql -u root -e "CREATE USER 'admin'@'%' IDENTIFIED BY 'admin';"
-              # mysql -u root -e "GRANT ALL PRIVILEGES ON question_bank_chatbot TO 'admin'@'%';"
+              # mysql -u root -e "CREATE USER 'admin123'@'%' IDENTIFIED BY 'admin123';"
+              # mysql -u root -e "GRANT ALL PRIVILEGES ON question_bank_chatbot TO 'admin123'@'%';"
               # mysql -u root -e "FLUSH PRIVILEGES;"
               EOF
 

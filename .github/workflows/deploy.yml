@@ -34,6 +34,8 @@ jobs:
             # Navigate to the app directory
             cd /var/www/html/app
             
+            echo "Running as user: \$(whoami)"
+
             sudo chown -R ubuntu:ubuntu .git
             
             # Pull latest changes from Git (optional, if you're using Git to manage code)

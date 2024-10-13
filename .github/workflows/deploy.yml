@@ -33,7 +33,6 @@ jobs:
             echo "Connected to AWS instance"
             # Navigate to the app directory
             cd /var/www/html/app
-            
             echo "Running as user: \$(whoami)"
             sudo chown -R ubuntu:ubuntu /var/www/html/app
             sudo chown -R ubuntu:ubuntu .git

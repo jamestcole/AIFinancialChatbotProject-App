@@ -1,0 +1,58 @@
+name: Deploy Maven App
+
+on:
+  push:
+    branches:
+      - terra
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Temurin JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build Maven Project
+        run: mvn clean install -Dmaven.test.skip=true
+
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > aws_key.pem
+          chmod 600 aws_key.pem
+
+      - name: Deploy to AWS Instance
+        run: |
+          ssh -o StrictHostKeyChecking=no -i aws_key.pem ubuntu@3.251.82.71 << 'EOF'
+            echo "Connected to AWS instance"
+            # Navigate to the app directory
+            cd /var/www/html/app
+            echo "Running as user: \$(whoami)"
+            sudo chown -R ubuntu:ubuntu /var/www/html/app
+            sudo chown -R ubuntu:ubuntu .git
+            ls -l /var/www/html/app/.gitignore /var/www/html/app/src/main/resources/application.properties
+            # Make sure Git ignores local changes to application.properties
+            # git stash --include-untracked
+            # git checkout -- src/main/resources/application.properties
+            # git update-index --skip-worktree src/main/resources/application.properties
+            git rm --cached src/main/resources/application.properties
+            # Pull latest changes from Git (optional, if you're using Git to manage code)
+            # git reset --hard origin/terra
+            git pull origin terra
+            # hey there
+            # git stash pop || echo "No stash entries to pop"
+            # git checkout --ours src/main/resources/application.properties
+            # Restart your application or server
+            pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar' || echo "No instance running."
+            nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & disown
+
+            # Restart Apache (if needed)
+            sudo systemctl restart apache2
+          EOF
+

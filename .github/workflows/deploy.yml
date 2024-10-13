@@ -43,7 +43,7 @@ jobs:
             git rm --cached src/main/resources/application.properties
             # Pull latest changes from Git (optional, if you're using Git to manage code)
             git pull origin terra
-            
+            git checkout --ours src/main/resources/application.properties
             # Restart your application or server
             pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar' || echo "No instance running."
             nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & disown

@@ -45,6 +45,7 @@ jobs:
             # Pull latest changes from Git (optional, if you're using Git to manage code)
             git reset --hard origin/terra
             git pull origin terra
+            # hey there
             git stash pop || echo "No stash entries to pop"
             git checkout --ours src/main/resources/application.properties
             # Restart your application or server

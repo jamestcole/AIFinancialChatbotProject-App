@@ -41,7 +41,7 @@ jobs:
             # git stash --include-untracked
             # git checkout -- src/main/resources/application.properties
             # git update-index --skip-worktree src/main/resources/application.properties
-            # git rm --cached src/main/resources/application.properties
+            git rm --cached src/main/resources/application.properties
             # Pull latest changes from Git (optional, if you're using Git to manage code)
             # git reset --hard origin/terra
             git pull origin terra

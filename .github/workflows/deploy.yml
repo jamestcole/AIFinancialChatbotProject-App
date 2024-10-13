@@ -35,16 +35,16 @@ jobs:
             cd /var/www/html/app
             
             echo "Running as user: \$(whoami)"
-
+            sudo chown -R ubuntu:ubuntu /var/www/html/app
             sudo chown -R ubuntu:ubuntu .git
-
+            ls -l /var/www/html/app/.gitignore /var/www/html/app/src/main/resources/application.properties
             # Make sure Git ignores local changes to application.properties
             git stash --include-untracked
             git checkout -- src/main/resources/application.properties
             # git update-index --skip-worktree src/main/resources/application.properties
             # git rm --cached src/main/resources/application.properties
             # Pull latest changes from Git (optional, if you're using Git to manage code)
-            
+
             git reset --hard origin/terra
             git pull origin terra
             git stash pop || echo "No stash entries to pop"

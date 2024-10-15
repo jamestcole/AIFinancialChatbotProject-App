@@ -33,6 +33,11 @@ jobs:
             echo "Connected to AWS instance"
             # Navigate to the app directory
             cd /var/www/html/app
+                # Check if port 8080 is free
+            if sudo lsof -i :8080; then
+                echo "Port 8080 is occupied, killing the process"
+                sudo kill $(sudo lsof -t -i:8080)
+            fi
             echo "Running as user: \$(whoami)"
             sudo chown -R ubuntu:ubuntu /var/www/html/app
             sudo chown -R ubuntu:ubuntu .git

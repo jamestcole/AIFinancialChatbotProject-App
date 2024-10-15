@@ -49,7 +49,16 @@ jobs:
             # git stash pop || echo "No stash entries to pop"
             # git checkout --ours src/main/resources/application.properties
             # Restart your application or server
-            pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar' || echo "No instance running."
+            
+            
+            # Gracefully kill any existing instance of the app
+            if pgrep -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar'; then
+              echo "Shutting down the existing instance of the app."
+              pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar'
+            else
+              echo "No running instance found."
+            fi
+
             nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & disown
 
             # Restart Apache (if needed)

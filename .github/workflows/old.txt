@@ -146,6 +146,7 @@ jobs:
           echo "Starting Apache server..."
           systemctl start apache2 
 
+          # spare line
           # sudo tail -n 50 /var/log/apache2/error.log
           # systemctl enable apache2
           # sudo systemctl status apache2.service

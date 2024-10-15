@@ -32,7 +32,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i aws_key.pem ubuntu@3.251.82.71 << 'EOF'
             echo "Connected to AWS instance"
             # Navigate to the app directory
-            chmod 600 aws_key.pem
+
             cd /var/www/html/app
                 # Check if port 8080 is free
             if sudo lsof -i :8080; then
@@ -65,6 +65,7 @@ jobs:
               echo "No running instance found."
             fi
             sudo lsof -t -i:8080
+            sudo mvn clean install -DskipTests
             nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & disown
 
 

@@ -63,7 +63,7 @@ jobs:
             else
               echo "No running instance found."
             fi
-
+            sudo lsof -t -i:8080
             nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & disown
 
             # Restart Apache (if needed)

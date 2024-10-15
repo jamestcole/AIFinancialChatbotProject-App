@@ -58,12 +58,12 @@ jobs:
             
             
             # Gracefully kill any existing instance of the app
-            if pgrep -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar'; then
-              echo "Shutting down the existing instance of the app."
-              pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar'
-            else
-              echo "No running instance found."
-            fi
+            # if pgrep -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar'; then
+            #  echo "Shutting down the existing instance of the app."
+            #  pkill -f 'FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar'
+            # else
+            #  echo "No running instance found."
+            # fi
             # sudo lsof -t -i:8080
             # sudo mvn clean install -DskipTests
             nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar &

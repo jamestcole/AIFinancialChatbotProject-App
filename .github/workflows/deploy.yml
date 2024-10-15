@@ -29,7 +29,7 @@ jobs:
 
       - name: Deploy to AWS Instance
         run: |
-          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i aws_key.pem ubuntu@3.251.82.71 << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i aws_key.pem ubuntu@3.251.82.71 << 'EOF'
             echo "Connected to AWS instance"
             # Navigate to the app directory
             cd /var/www/html/app

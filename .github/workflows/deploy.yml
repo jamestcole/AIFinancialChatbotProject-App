@@ -32,6 +32,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i aws_key.pem ubuntu@3.251.82.71 << 'EOF'
             echo "Connected to AWS instance"
             # Navigate to the app directory
+            chmod 600 aws_key.pem
             cd /var/www/html/app
                 # Check if port 8080 is free
             if sudo lsof -i :8080; then
@@ -68,5 +69,6 @@ jobs:
 
 
             sudo systemctl restart apache2
+            sleep 10 # Wait for processes to settle
           EOF
 

@@ -66,7 +66,7 @@ jobs:
             fi
             sudo lsof -t -i:8080
             sudo mvn clean install -DskipTests
-            nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar & disown
+            nohup java -jar target/FinancialAdvisorChatbot-0.0.1-SNAPSHOT.jar &
 
 
             sudo systemctl restart apache2
